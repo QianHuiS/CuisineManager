@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tw.idv.qianhuis.fridgemanager">
+    package="tw.idv.qianhuis.cuisinemanager">
 
     <application
         android:allowBackup="true"
@@ -11,7 +11,7 @@
         android:theme= "@style/AppTheme.NoActionBar">
         <!-- android:theme="@style/AppTheme" 預設bar顯示 -->
         <activity
-            android:name=".MainActivity"
+            android:name="tw.idv.qianhuis.cuisinemanager.MainActivity"
             android:screenOrientation="landscape">
             <!-- android:screenOrientation="landscape" 螢幕方向(鎖定橫向) -->
             <intent-filter>

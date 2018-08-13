@@ -1,4 +1,4 @@
-package tw.idv.qianhuis.fridgemanager;
+package tw.idv.qianhuis.cuisinemanager;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

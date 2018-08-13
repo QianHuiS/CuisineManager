@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "tw.idv.qianhuis.fridgemanager"
+        applicationId "tw.idv.qianhuis.cuisinemanager"
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1

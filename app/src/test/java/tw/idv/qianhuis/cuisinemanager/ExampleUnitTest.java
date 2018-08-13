@@ -1,4 +1,4 @@
-package tw.idv.qianhuis.fridgemanager;
+package tw.idv.qianhuis.cuisinemanager;
 
 import org.junit.Test;
 
