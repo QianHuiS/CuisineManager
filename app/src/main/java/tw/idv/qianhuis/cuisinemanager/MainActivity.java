@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /*
-* 隱藏StatusBar&ActivityBar:
-*   res\values\styles.xml 加設定
-*   AndroidManifest.xml 更改 <application android:theme>
-* 鎖定橫向螢幕: AndroidManifest.xml 加 <activity android:screenOrientation>
-*/
+ * 隱藏StatusBar&ActivityBar:
+ *   res\values\styles.xml 加設定
+ *   AndroidManifest.xml 更改 <application android:theme>
+ * 鎖定橫向螢幕: AndroidManifest.xml 加 <activity android:screenOrientation>
+ */
 public class MainActivity extends AppCompatActivity {
 
     //變數
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_fridge);
 
         //開啟DB
         mSQLiteDatabase = this.openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
                 "food_name TEXT, food_storagetime TEXT, food_specie INTEGER, " +
                 "food_quantity REAL, food_unit TEXT, food_position TEXT)";
         mSQLiteDatabase.execSQL(CREATE_FOOD_TABLE);     //執行SQL指令的字串.
-
-        // TODO: 2018/8/13 連結xml. 0
 
         //連結XML
         bt_freezing= findViewById(R.id.bt_freezing);
@@ -73,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         tv_fstoragetime= findViewById(R.id.tv_fstoragetime);
 
     }
+
 
     @Override
     protected void onResume() {
@@ -170,5 +169,4 @@ public class MainActivity extends AppCompatActivity {
                 return true;   //是否將長短按分開.
             }
         });*/
-
 }

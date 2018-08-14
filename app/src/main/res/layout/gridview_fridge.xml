@@ -9,7 +9,7 @@
         android:id="@+id/iv_showfspecie"
         android:layout_width="match_parent"
         android:layout_height="150px"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        app:srcCompat="@android:drawable/btn_star_big_off" />
 
     <TextView
         android:id="@+id/tv_showfstoragelife"

@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("tw.idv.qianhuis.fridgemanager", appContext.getPackageName());
+        assertEquals("tw.idv.qianhuis.cuisinemanager", appContext.getPackageName());
     }
 }

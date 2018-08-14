@@ -11,7 +11,7 @@
         android:theme= "@style/AppTheme.NoActionBar">
         <!-- android:theme="@style/AppTheme" 預設bar顯示 -->
         <activity
-            android:name="tw.idv.qianhuis.cuisinemanager.MainActivity"
+            android:name=".MainActivity"
             android:screenOrientation="landscape">
             <!-- android:screenOrientation="landscape" 螢幕方向(鎖定橫向) -->
             <intent-filter>
