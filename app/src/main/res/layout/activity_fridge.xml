@@ -1,87 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/bg_main">
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="left">
+        android:layout_weight="2"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <Button
                 android:id="@+id/bt_freezing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/bt_big"
                 android:layout_weight="1"
                 android:text="冷凍" />
 
             <Button
                 android:id="@+id/bt_refrigerated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/bt_big"
                 android:layout_weight="1"
                 android:text="冷藏" />
 
             <Button
                 android:id="@+id/bt_fresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/bt_big"
                 android:layout_weight="1"
                 android:text="保鮮" />
+
+            <Button
+                android:id="@+id/bt_search"
+                style="@style/bt_mini"
+                android:layout_weight="1"
+                android:text="查" />
+
+            <Button
+                android:id="@+id/bt_add"
+                style="@style/bt_mini"
+                android:layout_weight="1"
+                android:text="＋" />
 
         </LinearLayout>
 
         <GridView
             android:id="@+id/gv_food"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:horizontalSpacing="3dp"
+            android:verticalSpacing="3dp"
+            android:numColumns="3" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="right"
+        android:layout_weight="3"
         android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3.5">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/tv_headline"
+                android:text="詳 細 資 料" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2.5"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="5dp"
-                android:orientation="vertical">
+                android:layout_weight="3"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <Button
                     android:id="@+id/bt_delete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/bt_mini"
                     android:text="刪" />
 
                 <Button
                     android:id="@+id/bt_revise"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/bt_mini"
                     android:text="改" />
 
                 <Button
                     android:id="@+id/bt_select"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/bt_mini"
                     android:text="選" />
 
             </LinearLayout>
@@ -92,21 +120,19 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="20dp"
-                app:srcCompat="@mipmap/ic_launcher" />
+                app:srcCompat="@drawable/story_movie" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="30dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_fname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="名稱" />
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:paddingTop="20dp"
+            android:paddingEnd="20dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -114,34 +140,62 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tv_fname"
+                    style="@style/tv_title"
+                    android:layout_weight="2"
+                    android:text="名稱" />
+
+                <TextView
                     android:id="@+id/tv_fquantity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    style="@style/tv_contentc"
+                    android:layout_weight="3"
                     android:text="數量" />
 
                 <TextView
                     android:id="@+id/tv_funit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    style="@style/tv_content"
+                    android:layout_weight="3"
                     android:text="單位" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_fposition"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="存放位置" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_fstoragetime"
+                <TextView
+                    style="@style/tv_content"
+                    android:layout_weight="1"
+                    android:text="存放位置" />
+
+                <TextView
+                    android:id="@+id/tv_fposition"
+                    style="@style/tv_contentc"
+                    android:layout_weight="1"
+                    android:text="存放位置" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="入庫日期" />
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/tv_content"
+                    android:layout_weight="1"
+                    android:text="入庫日期" />
+
+                <TextView
+                    android:id="@+id/tv_fstoragetime"
+                    style="@style/tv_contentc"
+                    android:layout_weight="1"
+                    android:text="入庫日期" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
