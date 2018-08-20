@@ -21,6 +21,12 @@
             android:padding="10dp">
 
             <Button
+                android:id="@+id/bt_next"
+                style="@style/bt_mini"
+                android:layout_weight="1"
+                android:text="↓" />
+
+            <Button
                 android:id="@+id/bt_freezing"
                 style="@style/bt_big"
                 android:layout_weight="1"

@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
     //變數
     Button bt_freezing, bt_refrigerated, bt_fresh;
+    boolean noClick= true;
+    boolean frzIsClick= false;
+    boolean refIsClick= false;
+    boolean frsIsClick= false;
+
     GridView gv_food;
     ArrayList<HashMap<String, Object>> l_food;
 
@@ -44,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
     //DB
     private SQLiteDatabase mSQLiteDatabase= null;
     private static final String DATABASE_NAME = "app.db";
+    //SELECET WHERE
+    private static final String ALL = "1";
+    private static final String FREEZING = "food_position = '冷凍室' ";
+    private static final String REFRIGERATED = "food_position = '冷藏室' ";
+    private static final String FRESH = "food_position = '保鮮室' ";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,11 +102,25 @@ public class MainActivity extends AppCompatActivity {
         c.close();
 
         if(num==0) {
-            for(int i=0; i<12; i++) {
+            for(int i=0; i<3; i++) {
                 String INSERT = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
                         "VALUES('1', '高麗菜"+i+"', '1.5', " +
                         "'顆', '保鮮室', '20180814')";
+                mSQLiteDatabase.execSQL(INSERT);
+            }
+            for(int i=0; i<3; i++) {
+                String INSERT = "INSERT INTO food (food_specie, food_name, food_quantity, " +
+                        "food_unit, food_position, food_storagetime) " +
+                        "VALUES('3', '地瓜"+i+"', '2', " +
+                        "'顆', '冷凍室', '20180818')";
+                mSQLiteDatabase.execSQL(INSERT);
+            }
+            for(int i=0; i<3; i++) {
+                String INSERT = "INSERT INTO food (food_specie, food_name, food_quantity, " +
+                        "food_unit, food_position, food_storagetime) " +
+                        "VALUES('2', '檸檬愛玉"+i+"', '1', " +
+                        "'罐', '冷藏室', '20180818')";
                 mSQLiteDatabase.execSQL(INSERT);
             }
         }
@@ -106,32 +131,63 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        showList();
+        showList(ALL);
 
-        //新增food資料
-        bt_add.setOnClickListener(new View.OnClickListener() {  //
+        //冷凍food資料
+        bt_freezing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomDialog fAdd= new CustomDialog(MainActivity.this);
-                fAdd.buildAdd();
-                fAdd.show();
-                //監聽alert是否關閉(關閉後執行code)
-                fAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        if(fAdd.getSqlcode().equals("")){
-                            Toast.makeText(MainActivity.this, "新增失敗!?", Toast.LENGTH_SHORT).show();
-                        } else {
-                            mSQLiteDatabase.execSQL(fAdd.getSqlcode());
-                            showList(); //刷新lv.
-                            Toast.makeText(MainActivity.this, "新增成功!!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                //是否有點擊三bt
+                if(!frzIsClick) {
+                    showList(FREEZING);
+                    frzIsClick= true;
+                    refIsClick= false;
+                    frsIsClick= false;
+                } else {
+                    showList(ALL);
+                    frzIsClick = false;
+                    //noClick= false;
+                }
+                if(frzIsClick || refIsClick || frsIsClick)  noClick= false;
+                if((!frzIsClick) &&(!refIsClick) &&(!frsIsClick))   noClick= true;
             }
         });
 
+        //冷藏food資料
+        bt_refrigerated.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!refIsClick) {
+                    showList(REFRIGERATED);
+                    frzIsClick= false;
+                    refIsClick= true;
+                    frsIsClick= false;
+                } else {
+                    showList(ALL);
+                    refIsClick = false;
+                }
+                if(frzIsClick || refIsClick || frsIsClick)  noClick= false;
+                if((!frzIsClick) &&(!refIsClick) &&(!frsIsClick))   noClick= true;
+            }
+        });
 
+        //保鮮food資料
+        bt_fresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!frsIsClick) {
+                    showList(FRESH);
+                    frzIsClick= false;
+                    refIsClick= false;
+                    frsIsClick= true;
+                } else {
+                    showList(ALL);
+                    frsIsClick = false;
+                }
+                if(frzIsClick || refIsClick || frsIsClick)  noClick= false;
+                if((!frzIsClick) &&(!refIsClick) &&(!frsIsClick))   noClick= true;
+            }
+        });
 
     }
 
@@ -139,14 +195,13 @@ public class MainActivity extends AppCompatActivity {
 
     //其他函式
     //顯示食物gridview
-    public void showList(){ //把DB內容放入HashMap, 把HashMap放入ArrayList, 把ArrayList放入SimpleAdapter顯示.
+    public void showList(final String WHERE){ //把DB內容放入HashMap, 把HashMap放入ArrayList, 把ArrayList放入SimpleAdapter顯示.
         l_food.clear();
 
         Cursor c;
-        c= mSQLiteDatabase.rawQuery("select * from food where 1", null);  //where 1 即成立, 沒有條件.
+        c= mSQLiteDatabase.rawQuery("select * from food where "+WHERE, null);  //where 1 即成立, 沒有條件.
         c.moveToFirst();    //上列執行完c會在最後的下一筆位置(AfterLast), 故回到第一筆位置.
 
-        // TODO: 2018/8/13 待優化, 改用for(int i=0; i<.總長; i++), put(欄位String[],i).
         while(!c.isAfterLast()){
             FoodItem fi= new FoodItem(c.getString(0), c.getString(1), c.getString(2),
                     c.getString(3), c.getString(4), c.getString(5), c.getString(6));
@@ -194,6 +249,29 @@ public class MainActivity extends AppCompatActivity {
                 //tv_種類有效期限.setText((String)selectItem.get("storagelife"));
                 //tv_剩餘有效天數.setText((String)selectItem.get("foodlife"));
 
+                //新增food資料
+                bt_add.setOnClickListener(new View.OnClickListener() {  //
+                    @Override
+                    public void onClick(View v) {
+                        final CustomDialog fAdd= new CustomDialog(MainActivity.this);
+                        fAdd.buildAdd();
+                        fAdd.show();
+                        //監聽alert是否關閉(關閉後執行code)
+                        fAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                if(fAdd.getSqlcode().equals("")){
+                                    Toast.makeText(MainActivity.this, "新增失敗!?", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    mSQLiteDatabase.execSQL(fAdd.getSqlcode());
+                                    showList(WHERE); //刷新lv.
+                                    Toast.makeText(MainActivity.this, "新增成功!!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+
                 //刪除food資料
                 bt_delete.setOnClickListener(new View.OnClickListener() {   //刪除bt, 再次確認alert, DB刪除後showList().
                     @Override
@@ -208,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.makeText(MainActivity.this, "刪除失敗!?", Toast.LENGTH_SHORT).show();
                                 } else {
                                     mSQLiteDatabase.execSQL(fDelete.getSqlcode());
-                                    showList(); //刷新lv.
+                                    showList(WHERE); //刷新lv.
                                     Toast.makeText(MainActivity.this, "刪除成功!!", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -231,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.makeText(MainActivity.this, "修改失敗!?", Toast.LENGTH_SHORT).show();
                                 } else {
                                     mSQLiteDatabase.execSQL(fRevise.getSqlcode());
-                                    showList(); //刷新lv.
+                                    showList(WHERE); //刷新lv.
                                     Toast.makeText(MainActivity.this, "修改成功!!", Toast.LENGTH_SHORT).show();
                                 }
                             }
