@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.MessageFormat;
+
 /*使用方法:
 * CustomDialog ALERT= new CustomDialog(CONTEXT.this);
 * ALERT.BUILD();
@@ -199,6 +201,62 @@ public class CustomDialog extends Dialog {
         setAlertWindow(0.8, 0.7, true);
     }
 
+    public void buildSearch() {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertView = inflater.inflate(R.layout.alertdialog_fsearch, null);    //layout可換!
+
+        alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
+            @Override
+            public void onClick(View v) {
+                //連接layoutXML
+                //種類!!
+                EditText et_fname= alertView.findViewById(R.id.et_fname);
+                EditText et_fposition= alertView.findViewById(R.id.et_fposition);
+                EditText et_fstoragetime= alertView.findViewById(R.id.et_fstoragetime);
+
+                String[] fcontent=new String[4];
+                fcontent[0]= ""; //種類!!
+                fcontent[1]= et_fname.getText().toString();
+                fcontent[2]= et_fposition.getText().toString();
+                fcontent[3]= et_fstoragetime.getText().toString();
+
+                //取得填寫的內容
+                String[] column=new String[4];
+                //column[0]= MessageFormat.format("food_specie= '{0}'", fcontent[0]);  //種類!!
+                column[0]= "food_specie= '"+ fcontent[0] +"'";  //種類!!
+                column[1]= "food_name like '%"+ fcontent[1] +"%'";
+                column[2]= "food_position= '"+ fcontent[2] +"'";
+                column[3]= "food_storagetime= '"+ fcontent[3] +"'";
+
+                boolean first= true;
+                String WHERE= "";
+                for(int i=0; i<fcontent.length; i++) {
+                    if (fcontent[i].equals("")) continue;
+                    else {
+                        if (first)  first= false;
+                        else    WHERE += " and ";
+                        WHERE += column[i];
+                    }
+                }
+                //Toast.makeText(context, WHERE, Toast.LENGTH_LONG).show();
+
+                sqlcode= WHERE;     //相當於return String.
+                dismiss();
+            }
+        });
+
+        alertView.findViewById(R.id.bt_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancel();
+            }
+        });
+
+        setContentView(alertView);
+        setAlertWindow(0.9, 0.9, false);
+    }
+
+    //視窗大小設定
     private void setAlertWindow(double w, double h, boolean touchOut){
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();   //取得螢幕寬高.

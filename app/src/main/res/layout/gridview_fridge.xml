@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:padding="5dp"
-    android:background="@drawable/category_bg">
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:background="@drawable/category_bg"
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/iv_showfspecie"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         app:srcCompat="@drawable/story_movie" />
 
     <TextView
         android:id="@+id/tv_showfspecie"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:gravity="center"
         android:text="0"
-        android:textSize="30sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tv_showfstoragelife"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="right|top"
+        android:background="@drawable/calculator_key_brown"
         android:gravity="center"
         android:text="0"
-        android:textSize="18sp"
-        android:background="@drawable/calculator_key_brown" />
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,12 +39,12 @@
         <TextView
             android:id="@+id/tv_showfname"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
+            android:background="@drawable/button_orange"
             android:gravity="center"
-            android:padding="4dp"
+            android:padding="2dp"
             android:text="我是食物"
-            android:textSize="16sp"
-            android:background="@drawable/button_orange" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 
