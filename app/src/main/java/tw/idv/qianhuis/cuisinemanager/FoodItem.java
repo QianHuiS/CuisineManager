@@ -1,11 +1,10 @@
 package tw.idv.qianhuis.cuisinemanager;
 
-import java.util.Date;
+import android.util.Log;
+
 import java.util.HashMap;
 
 public class FoodItem {
-
-    private HashMap<String, Object> foodItem;
     private String fId;
     private String fSpecie;
     private String fName;
@@ -14,13 +13,16 @@ public class FoodItem {
     private String fPosition;
     private String fStoragetime;
 
-    private String fExpirationdate;     //過期日.
-    private String fStoragelife;         //過期日.
+    private SpecieItem sItem;
 
-    public FoodItem(){};
+    private String fExpirationdate;  //過期日.
+    private String fLife;   //剩餘天.
 
+    //public FoodItem(){};
+
+    //建立HashMap
     public FoodItem(String fid, String fspecie, String fname, String fquantity,
-                    String funit, String fposition, String fstoragetime){
+                    String funit, String fposition, String fstoragetime, SpecieItem sitem){
         fId= fid;
         fSpecie= fspecie; //種類!!
         fName= fname;
@@ -29,83 +31,33 @@ public class FoodItem {
         fPosition= fposition;
         fStoragetime= fstoragetime;
 
-        //fexpirationdate= getExpirationdate();
-        //storagelife= getStoragelife();
+        sItem=sitem;
 
-        setFoodItem();
-    };
+        setfExpirationdate();
+        setfLife();
+    }
 
+    //取得已有的HashMap內容物
     public FoodItem(HashMap<String, Object> selectItem){
-        fId= (String)selectItem.get("index_id");   //拿出物件中的某資訊.
+        fId= (String)selectItem.get("food_id");   //拿出物件中的某資訊.
         fSpecie= (String)selectItem.get("food_specie"); //種類!!
         fName= (String)selectItem.get("food_name");
         fQuantity= (String)selectItem.get("food_quantity");
         fUnit= (String)selectItem.get("food_unit");
         fPosition= (String)selectItem.get("food_position");
         fStoragetime= (String)selectItem.get("food_storagetime");
-    }
 
-    //取得過期日
-    public static int getExpirationdate(int storagetime,int foodlife) {
-        int expirationdate= Integer.valueOf(storagetime) +foodlife;
-        return expirationdate;
-    }
+        sItem= new SpecieItem(
+                (String)selectItem.get("specie_id"),
+                (String)selectItem.get("specie_name"),
+                (String)selectItem.get("specie_life")
+        );
 
-    public void setfExpirationdate(String fExpirationdate) {
-        this.fExpirationdate = fExpirationdate;
-    }
-
-    //取得剩餘天數
-    public static String getStoragelife(int expirationdate) {
-
-        int storagelife= expirationdate-getToday();
-
-        return String.valueOf(storagelife);
-    }
-
-    public void setfStoragelife(String fStoragelife) {
-        this.fStoragelife = fStoragelife;
-    }
-
-    //取得今天日期
-    public static int getToday(){
-        Date myDate= new Date();
-        int thisYear= myDate.getYear()+1900;
-        int thisMonth= myDate.getMonth()+1; //變數們
-        int thisDay= myDate.getDate();
-
-        String date= dateFormat(thisYear, thisMonth, thisDay);
-        return Integer.valueOf(date);
-    }
-
-    //日期格式轉換
-    public static String dateFormat(int year, int month, int day){
-        String date= String.valueOf(year) +
-                String.valueOf(month < 10 ? "0"+month: month) +
-                String.valueOf(day < 10 ? "0"+day: day);
-        return date;
+        setfExpirationdate();
+        setfLife();
     }
 
     //Getter&Setter
-    public HashMap<String, Object> getFoodItem() {
-        return foodItem;
-    }
-
-    public void setFoodItem(HashMap<String, Object> foodItem) {
-        this.foodItem = foodItem;
-    }
-
-    public void setFoodItem() {
-        foodItem= new HashMap<>();
-        foodItem.put("index_id", fId);
-        foodItem.put("food_specie", fSpecie);
-        foodItem.put("food_name", fName);
-        foodItem.put("food_quantity", fQuantity);
-        foodItem.put("food_unit", fUnit);
-        foodItem.put("food_position", fPosition);  //數字為欄位順序.
-        foodItem.put("food_storagetime", fStoragetime);
-    }
-
     public String getfId() {
         return fId;
     }
@@ -160,6 +112,57 @@ public class FoodItem {
 
     public void setfStoragetime(String fStoragetime) {
         this.fStoragetime = fStoragetime;
+    }
+
+    public SpecieItem getsItem() {
+        return sItem;
+    }
+
+    public void setsItem(SpecieItem sItem) {
+        this.sItem = sItem;
+    }
+
+    public String getfExpirationdate() {
+        return fExpirationdate;
+    }
+
+    public String getfLife() {
+        return fLife;
+    }
+
+    //其他
+    public HashMap<String, Object> getfHashMap() {      //僅允許內部設置.
+        HashMap<String, Object> fHashMap= new HashMap<>();
+        fHashMap.put("food_id", fId);
+        fHashMap.put("food_specie", fSpecie);
+        fHashMap.put("food_name", fName);
+        fHashMap.put("food_quantity", fQuantity);
+        fHashMap.put("food_unit", fUnit);
+        fHashMap.put("food_position", fPosition);
+        fHashMap.put("food_storagetime", fStoragetime);
+
+        fHashMap.put("food_expirationdate", fExpirationdate);
+        fHashMap.put("food_life", fLife);
+
+        fHashMap.put("specie_id", sItem.getsId());
+        fHashMap.put("specie_name", sItem.getsName());
+        fHashMap.put("specie_life", sItem.getsLife());
+
+        return fHashMap;
+    }
+
+    //計算過期日
+    private void setfExpirationdate() {
+        DateFunction df= new DateFunction();
+        df.dateAdd(fStoragetime, sItem.getsLife());
+        fExpirationdate= df.stringFormat();
+    }
+
+    //計算剩餘天數
+    public void setfLife() {
+        fLife= DateFunction.dateCalculation(
+                fExpirationdate, DateFunction.getToday()
+        );
     }
 
 }

@@ -56,6 +56,12 @@
                 android:layout_weight="1"
                 android:text="＋" />
 
+            <Button
+                android:id="@+id/bt_expired"
+                style="@style/bt_mini"
+                android:layout_weight="1"
+                android:text="即期" />
+
         </LinearLayout>
 
         <ImageView
@@ -103,8 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:orientation="vertical">
 
                 <Button
                     android:id="@+id/bt_delete"
@@ -138,68 +143,131 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:orientation="vertical"
-            android:paddingEnd="20dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="20dp">
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingRight="2dp">
 
                 <TextView
                     android:id="@+id/tv_fname"
                     style="@style/tv_title"
-                    android:layout_weight="2"
-                    android:text="名稱" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:hint="我是菜" />
 
                 <TextView
                     android:id="@+id/tv_fquantity"
-                    style="@style/tv_contentc"
-                    android:layout_weight="3"
-                    android:text="數量" />
+                    style="@style/tv_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:hint="0.0"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_funit"
                     style="@style/tv_content"
-                    android:layout_weight="3"
-                    android:text="單位" />
+                    android:layout_weight="2"
+                    android:hint="隻"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <TextView
-                    style="@style/tv_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:layout_weight="1"
-                    android:text="存放位置" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_fposition"
-                    style="@style/tv_contentc"
+                    <TextView
+                        style="@style/tv_content"
+                        android:layout_weight="1"
+                        android:gravity="center|end"
+                        android:text="存放位置：" />
+
+                    <TextView
+                        style="@style/tv_content"
+                        android:layout_weight="1"
+                        android:gravity="center|end"
+                        android:text="入庫日期：" />
+
+                    <TextView
+                        style="@style/tv_content"
+                        android:layout_weight="1"
+                        android:gravity="center|end"
+                        android:text="過期日：" />
+
+                    <TextView
+                        style="@style/tv_content"
+                        android:layout_weight="1"
+                        android:gravity="center|end"
+                        android:text="剩餘天數：" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="存放位置" />
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_fposition"
+                        style="@style/tv_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:hint="菜菜室" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_fstoragetime"
+                        style="@style/tv_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:hint="1997-08-21" />
 
-                <TextView
-                    style="@style/tv_content"
-                    android:layout_weight="1"
-                    android:text="入庫日期" />
+                    <TextView
+                        android:id="@+id/tv_expirationdate"
+                        style="@style/tv_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:hint="1997-08-21" />
 
-                <TextView
-                    android:id="@+id/tv_fstoragetime"
-                    style="@style/tv_contentc"
-                    android:layout_weight="1"
-                    android:text="入庫日期" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_foodlife"
+                            style="@style/tv_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:hint="0" />
+
+                        <TextView
+                            style="@style/tv_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="天" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 

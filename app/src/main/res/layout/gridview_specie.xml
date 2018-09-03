@@ -8,35 +8,33 @@
     android:padding="5dp">
 
     <ImageView
-        android:id="@+id/iv_showfspecie"
+        android:id="@+id/iv_simage"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:srcCompat="@drawable/story_movie" />
 
     <TextView
-        android:id="@+id/tv_showfspecie"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:gravity="center"
-        android:text="0"
-        android:textSize="20sp" />
+        android:text="菜"
+        android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/tv_showflife"
+        android:id="@+id/tv_showslife"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_gravity="right|top"
+        android:layout_gravity="left|top"
         android:background="@drawable/calculator_key_brown"
         android:gravity="center"
         android:text="0"
         android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/tv_showfname"
+        android:id="@+id/tv_showsname"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_gravity="bottom"
-        android:background="@drawable/button_orange"
         android:gravity="center"
         android:padding="2dp"
         android:text="我是食物"

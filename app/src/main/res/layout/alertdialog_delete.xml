@@ -21,7 +21,8 @@
 
         <TextView
             android:id="@+id/tv_content"
-            style="@style/tv_titlec"
+            style="@style/tv_title"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:text="內容" />
@@ -42,7 +43,8 @@
             style="@style/bt_big"
             android:layout_width="95dp"
             android:layout_weight="1"
-            android:text="取消" />
+            android:text="取消"
+            android:layout_marginRight="15dp" />
 
         <Button
             android:id="@+id/bt_ok"

@@ -17,19 +17,57 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="30dp"
-        android:orientation="horizontal">
+        android:paddingRight="30dp">
 
-        <ImageView
-            android:id="@+id/imageView"
+        <FrameLayout
+            style="@style/btimage_fitem"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="80dp"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
             android:layout_weight="4"
-            app:srcCompat="@drawable/story_movie" />
+            android:background="@drawable/category_bg"
+            android:padding="5dp">
+
+            <ImageButton
+                android:id="@+id/ib_specie"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:scaleType="centerInside"
+                android:background="#00000000"
+                app:srcCompat="@drawable/story_movie" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:gravity="center"
+                android:text="菜"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_showslife"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="left|top"
+                android:background="@drawable/calculator_key_brown"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:hint="0" />
+
+            <TextView
+                android:id="@+id/tv_showsname"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:padding="2dp"
+                android:textSize="12sp"
+                android:hint="什毛類" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,24 +84,28 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/tv_titlec"
+                    style="@style/tv_title"
+                    android:gravity="center|end"
                     android:layout_weight="1"
-                    android:text="名稱" />
+                    android:text="名稱：" />
 
                 <TextView
-                    style="@style/tv_titlec"
+                    style="@style/tv_title"
+                    android:gravity="center|end"
                     android:layout_weight="1"
-                    android:text="數量" />
+                    android:text="數量：" />
 
                 <TextView
-                    style="@style/tv_titlec"
+                    style="@style/tv_title"
+                    android:gravity="center|end"
                     android:layout_weight="1"
-                    android:text="存放位置" />
+                    android:text="存放位置：" />
 
                 <TextView
-                    style="@style/tv_titlec"
+                    style="@style/tv_title"
+                    android:gravity="center|end"
                     android:layout_weight="1"
-                    android:text="入庫日期" />
+                    android:text="入庫日期：" />
 
             </LinearLayout>
 
@@ -91,13 +133,14 @@
                         style="@style/et_content"
                         android:layout_weight="1"
                         android:hint="666"
-                        android:inputType="textPersonName" />
+                        android:inputType="number" />
 
                     <TextView
-                        style="@style/tv_titlec"
+                        style="@style/tv_title"
+                        android:gravity="center|end"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="單位" />
+                        android:text="單位：" />
 
                     <EditText
                         android:id="@+id/et_funit"
@@ -114,12 +157,10 @@
                     android:hint="菜菜ㄉ家"
                     android:inputType="textPersonName" />
 
-                <EditText
-                    android:id="@+id/et_fstoragetime"
-                    style="@style/et_content"
+                <Button
+                    android:id="@+id/bt_fstoragetime"
                     android:layout_weight="1"
-                    android:hint="啥時回ㄉ家"
-                    android:inputType="textPersonName" />
+                    style="@style/bt_date" />
 
             </LinearLayout>
 
@@ -133,15 +174,16 @@
         android:layout_gravity="right|bottom"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingRight="30dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:paddingRight="30dp">
 
         <Button
             android:id="@+id/bt_cancel"
             style="@style/bt_big"
             android:layout_width="95dp"
             android:layout_weight="1"
-            android:text="取消" />
+            android:text="取消"
+            android:layout_marginRight="15dp" />
 
         <Button
             android:id="@+id/bt_ok"

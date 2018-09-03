@@ -14,23 +14,38 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
     </style>
-
+    <!--改為btcontent_big/mini (bt尺寸字設定_大小類) +
+    btimage_功能類用途 (fridge/recipe/cuisine bt圖片設定_功能類)
+        selector_功能類用途.xml-->
     <style name="bt_big">
         <item name="android:layout_width">65dp</item>
         <item name="android:layout_height">45dp</item>
-        <item name="android:background">@drawable/calculator_key_ok</item>  <!--待刪-->
+        <item name="android:background">@drawable/selector_fclickbt</item>  <!--待刪-->
         <item name="android:textSize">16sp</item>
     </style>
 
     <style name="bt_mini">
         <item name="android:layout_width">45dp</item>
         <item name="android:layout_height">45dp</item>
-        <item name="android:background">@drawable/calculator_key_ok</item>  <!--待刪-->
+        <item name="android:background">@drawable/selector_fclickbt</item>  <!--待刪-->
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="fridge_bt">
+    <style name="bt_date">
+        <item name="android:layout_width">120dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:background">@drawable/selector_fdatebt</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:hint">yyyy/mm/dd</item>
+    </style>
+
+    <style name="btimage_fridge">
         <item name="android:background">@drawable/calculator_key_ok</item>
+    </style>
+
+    <style name="btimage_fitem">
+        <item name="android:background">@drawable/selector_fselectitem</item>
+        <item name="android:cacheColorHint">#e0000000</item>
     </style>
 
     <style name="tv_headline">
@@ -51,32 +66,16 @@
     <style name="tv_content">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">5dp</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="et_content">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:ems">5</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
-    <style name="tv_titlec">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">5dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="tv_contentc">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">5dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textSize">12sp</item>
-    </style>
 
 
 </resources>

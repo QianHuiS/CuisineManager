@@ -17,10 +17,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="30dp"
-        android:orientation="horizontal">
+        android:paddingRight="30dp">
 
         <ImageView
             android:id="@+id/imageView"
@@ -46,19 +47,22 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/tv_titlec"
+                    style="@style/tv_title"
+                    android:gravity="center|end"
                     android:layout_weight="1"
-                    android:text="名稱" />
+                    android:text="名稱：" />
 
                 <TextView
-                    style="@style/tv_titlec"
+                    style="@style/tv_title"
+                    android:gravity="center|end"
                     android:layout_weight="1"
-                    android:text="存放位置" />
+                    android:text="存放位置：" />
 
                 <TextView
-                    style="@style/tv_titlec"
+                    style="@style/tv_title"
+                    android:gravity="center|end"
                     android:layout_weight="1"
-                    android:text="入庫日期" />
+                    android:text="入庫日期：" />
 
             </LinearLayout>
 
@@ -90,12 +94,10 @@
                     android:hint="菜菜ㄉ家"
                     android:inputType="textPersonName" />
 
-                <EditText
-                    android:id="@+id/et_fstoragetime"
-                    style="@style/et_content"
-                    android:layout_weight="1"
-                    android:hint="啥時回ㄉ家"
-                    android:inputType="textPersonName" />
+                <Button
+                    android:id="@+id/bt_fstoragetime"
+                    style="@style/bt_date"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -109,15 +111,16 @@
         android:layout_gravity="right|bottom"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingRight="30dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:paddingRight="30dp">
 
         <Button
             android:id="@+id/bt_cancel"
             style="@style/bt_big"
             android:layout_width="95dp"
             android:layout_weight="1"
-            android:text="取消" />
+            android:text="取消"
+            android:layout_marginRight="15dp" />
 
         <Button
             android:id="@+id/bt_ok"
