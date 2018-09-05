@@ -18,7 +18,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +60,7 @@ public class CustomDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 final CustomDialog fSpecie= new CustomDialog(context);
-                fSpecie.buildSpecie(l_specie);  // TODO: 2018/9/3 疑問, buildSpecie()使用算高耦合度? 是否應該在alert中進行DB查詢?
+                fSpecie.buildSselect(l_specie);  // TODO: 2018/9/3 疑問, buildSselect()使用算高耦合度? 是否應該在alert中進行DB查詢?
                 fSpecie.show();
                 fSpecie.setOnDismissListener(new OnDismissListener() {
                     @Override
@@ -193,7 +192,7 @@ public class CustomDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 final CustomDialog fSpecie= new CustomDialog(context);
-                fSpecie.buildSpecie(l_specie);  // TODO: 2018/9/3 疑問, buildSpecie()使用算高耦合度? 是否應該在alert中進行DB查詢?
+                fSpecie.buildSselect(l_specie);  // TODO: 2018/9/3 疑問, buildSselect()使用算高耦合度? 是否應該在alert中進行DB查詢?
                 fSpecie.show();
                 fSpecie.setOnDismissListener(new OnDismissListener() {
                     @Override
@@ -297,8 +296,8 @@ public class CustomDialog extends Dialog {
         setAlertWindow(0.9, 0.9, false);
     }
 
-    //Specie
-    public void buildSpecie(final ArrayList<HashMap<String, Object>> l_specie) {
+    //Specie Select
+    public void buildSselect(final ArrayList<HashMap<String, Object>> l_specie) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView= inflater.inflate(R.layout.alertdialog_specie, null);    //layout可換!
 
@@ -324,66 +323,6 @@ public class CustomDialog extends Dialog {
         setContentView(alertView);
         this.setAlertWindow(0.7, 0.9, true, "right", 0.6f);
     }
-
-    //Specie Add
-    public void buildSInput() {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View alertView= inflater.inflate(R.layout.alertdialog_sinput, null);    //layout可換!
-
-        ImageButton ib_specie= alertView.findViewById(R.id.ib_specie);
-        ib_specie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: 2018/8/28  gridview選擇種類項目, 讀檔image放入list放入adapter顯示gridview.
-                //選擇圖片alert
-                // ib_specie.setImageResource(R.drawable.圖檔名稱不含副檔名)
-                //下方290行 取得圖檔
-            }
-        });
-
-        alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
-            @Override
-            public void onClick(View v) {
-                //連接layoutXML
-                //種類!!
-                EditText et_sname= alertView.findViewById(R.id.et_sname);
-                EditText et_slife= alertView.findViewById(R.id.et_slife);
-                ImageButton ib_specie= alertView.findViewById(R.id.ib_specie);  //是否不需要??
-
-                //取得填寫的內容
-                String[] scontent=new String[3];
-                scontent[0]= et_sname.getText().toString();
-                scontent[1]= et_slife.getText().toString();
-                scontent[2]= ib_specie.getResources().toString();   //是否有問題!!!
-
-                //檢查是否有欄位為空
-                boolean isNull= false;
-                for(int i=0; i<scontent.length; i++){
-                    if(scontent[i].equals(""))
-                        isNull= true;
-                }   //若使用for each, 暫存each的對象為空時, 會造成錯誤.
-
-                if(isNull) {  //若有欄位未填寫.
-                    Toast.makeText(context, "有欄位空著!!", Toast.LENGTH_SHORT).show();
-                }else {
-                    String INSERT_FOOD_TABLE = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
-                            "VALUES('"+ scontent[0] +"', '"+ scontent[1] +"', '"+ scontent[2] +"')";
-                    //mSQLiteDatabase.execSQL(INSERT_FOOD_TABLE);
-                    //Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
-
-                    rcontent= INSERT_FOOD_TABLE;     //相當於return String.
-                    dismiss();
-                }
-            }
-        });
-
-        alertView.findViewById(R.id.bt_delete).setActivated(false);     //新增specie無刪除功能.
-
-        setContentView(alertView);
-        setAlertWindow(0.9, 0.7, false);
-    }
-
-    // TODO: 2018/8/29 Specie Revise
 
     //Food Delete
     public void buildDelete(final FoodItem fi) {
@@ -417,12 +356,43 @@ public class CustomDialog extends Dialog {
     }
 
     //Food Search
-    public void buildSearch() {
+    public void buildSearch(final ArrayList<HashMap<String, Object>> l_specie) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView = inflater.inflate(R.layout.alertdialog_fsearch, null);    //layout可換!
 
-        // TODO: 2018/9/3 種類按鈕和XML元件修改 1
+        //種類按鈕
+        final ImageButton ib_specie= alertView.findViewById(R.id.ib_specie);
+        ib_specie.setTag("");   //"初始化"tag, 避免無輸入時錯誤.
+        ib_specie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CustomDialog fSpecie= new CustomDialog(context);
+                fSpecie.buildSselect(l_specie);  // TODO: 2018/9/3 疑問, buildSselect()使用算高耦合度? 是否應該在alert中進行DB查詢?
+                fSpecie.show();
+                fSpecie.setOnDismissListener(new OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if(!fSpecie.getReturn().equals("")) {
+                            TextView tv_showsname= alertView.findViewById(R.id.tv_showsname);
+                            TextView tv_showslife= alertView.findViewById(R.id.tv_showslife);
 
+                            //取得點選的種類ID, 取出詳細資料顯示在button.
+                            SpecieItem si= new SpecieItem(l_specie.get(
+                                    Integer.valueOf(fSpecie.getReturn())
+                            ));
+
+                            tv_showsname.setText(si.getsName());
+                            tv_showslife.setText(si.getsLife());
+                            ib_specie.setTag(si.getsId());  //用Tag紀錄ID.
+                            // ib_specie.setImageResource(R.drawable.圖檔名稱不含副檔名)
+                            //ib_specie.setImageResource();    //設置圖片.
+                        }
+                    }
+                });
+            }
+        });
+
+        //日期按鈕
         final Button bt_fstoragetime= alertView.findViewById(R.id.bt_fstoragetime);
         bt_fstoragetime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -451,19 +421,17 @@ public class CustomDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 //連接layoutXML
-                //種類!!
                 EditText et_fname= alertView.findViewById(R.id.et_fname);
                 EditText et_fposition= alertView.findViewById(R.id.et_fposition);
 
                 String[] fcontent=new String[4];
-                fcontent[0]= ""; //種類!!
+                fcontent[0]= ib_specie.getTag().toString();
                 fcontent[1]= et_fname.getText().toString();
                 fcontent[2]= et_fposition.getText().toString();
                 fcontent[3]= bt_fstoragetime.getText().toString();
 
                 //取得填寫的內容
                 String[] column=new String[4];
-                //column[0]= MessageFormat.format("food_specie= '{0}'", fcontent[0]);  //種類!!
                 column[0]= "food_specie= '"+ fcontent[0] +"'";  //種類!!
                 column[1]= "food_name like '%"+ fcontent[1] +"%'";
                 column[2]= "food_position= '"+ fcontent[2] +"'";
@@ -497,6 +465,198 @@ public class CustomDialog extends Dialog {
         setContentView(alertView);
         setAlertWindow(0.9, 0.9, false);
     }
+
+
+    //Specie Set
+    public void buildSset(final ArrayList<HashMap<String, Object>> l_specie) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertView= inflater.inflate(R.layout.alertdialog_specie, null);    //layout可換!
+
+        //新增種類
+        Button bt_add= alertView.findViewById(R.id.bt_add);
+        bt_add.setVisibility(View.VISIBLE);
+        bt_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rcontent="ADD";
+                dismiss();
+            }
+        });
+
+        //gridview選擇種類項目
+        //讀DBspecieTable(在main)放入list(傳給alert), 放入adapter顯示gridview.
+        GridView gv_specie= alertView.findViewById(R.id.gv_specie);
+        SimpleAdapter adapter= new SimpleAdapter(context,
+                l_specie, R.layout.gridview_specie,
+                new String[]{"specie_name", "specie_life"},
+                new int[]{R.id.tv_showsname, R.id.tv_showslife}
+        );
+        gv_specie.setAdapter(adapter);
+
+        //gridviewitem選擇事件
+        gv_specie.setOnItemClickListener(new AdapterView.OnItemClickListener() {    //選擇後設定rcontent=s_id, 關閉alert.
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                rcontent= String.valueOf(position);
+                dismiss();
+            }
+        });
+
+        setContentView(alertView);
+        this.setAlertWindow(0.7, 0.9, true);
+    }
+
+    //Specie Add
+    public void buildSInput() {     //(修改傳入si)填寫完回傳sqlcode.
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertView= inflater.inflate(R.layout.alertdialog_sinput, null);    //layout可換!
+
+        //gridview
+
+        alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
+            @Override
+            public void onClick(View v) {
+                //連接layoutXML
+                EditText et_sname= alertView.findViewById(R.id.et_sname);
+                EditText et_slife= alertView.findViewById(R.id.et_slife);
+                //圖片!!!
+
+                //取得填寫的內容
+                String[] scontent=new String[2];
+                scontent[0]= et_sname.getText().toString();
+                scontent[1]= et_slife.getText().toString();
+                //scontent[2]= .getResources().toString();
+
+                //檢查是否有欄位為空
+                boolean isNull= false;
+                for(int i=0; i<scontent.length; i++){
+                    if(scontent[i].equals(""))
+                        isNull= true;
+                }   //若使用for each, 暫存each的對象為空時, 會造成錯誤.
+
+                if(isNull) {  //若有欄位未填寫.
+                    Toast.makeText(context, "有欄位空著!!", Toast.LENGTH_SHORT).show();
+                }else {
+                    String INSERT_SPECIE_TABLE = "INSERT INTO specie (specie_name, specie_life) " +   //, specie_image
+                            "VALUES('"+ scontent[0] +"', '"+ scontent[1] +"')";     //, '"+ scontent[2] +"'
+                    //mSQLiteDatabase.execSQL(INSERT_FOOD_TABLE);
+                    //Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
+
+                    rcontent= INSERT_SPECIE_TABLE;     //相當於return String.
+                    dismiss();
+                }
+            }
+        });
+
+        setContentView(alertView);
+        setAlertWindow(0.8, 0.8, true);
+    }
+
+    //Specie Revise
+    public void buildSInput(final SpecieItem si) {     //修改傳入si,填寫完回傳sqlcode.
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertView= inflater.inflate(R.layout.alertdialog_sinput, null);    //layout可換!
+
+        EditText et_sname= alertView.findViewById(R.id.et_sname);
+        EditText et_slife= alertView.findViewById(R.id.et_slife);
+
+        et_sname.setText(si.getsName());
+        et_slife.setText(si.getsLife());
+        //gridview
+
+        alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
+            @Override
+            public void onClick(View v) {
+                //連接layoutXML
+                EditText et_sname= alertView.findViewById(R.id.et_sname);
+                EditText et_slife= alertView.findViewById(R.id.et_slife);
+                //圖片!!!
+
+                //取得填寫的內容
+                String[] scontent=new String[3];
+                scontent[0]= si.getsId();
+                scontent[1]= et_sname.getText().toString();
+                scontent[2]= et_slife.getText().toString();
+                //scontent[3]= .getResources().toString();
+
+                //檢查是否有欄位為空
+                boolean isNull= false;
+                for(int i=0; i<scontent.length; i++){
+                    if(scontent[i].equals(""))
+                        isNull= true;
+                }   //若使用for each, 暫存each的對象為空時, 會造成錯誤.
+
+                if(isNull) {  //若有欄位未填寫.
+                    Toast.makeText(context, "有欄位空著!!", Toast.LENGTH_SHORT).show();
+                }else {
+                    String UPDATE_SPECIE_TABLE= "UPDATE specie SET " +
+                            "specie_name='"+ scontent[1] +"', specie_life='"+ scontent[2] +"' " +   //, specie_image="+ scontent[3] +
+                            "where specie_id=" + scontent[0];
+                    //mSQLiteDatabase.execSQL(INSERT_FOOD_TABLE);
+                    //Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
+                    rcontent= UPDATE_SPECIE_TABLE;     //相當於return String.
+                    dismiss();
+                }
+            }
+        });
+
+        Button bt_delete= alertView.findViewById(R.id.bt_delete);
+        bt_delete.setVisibility(View.VISIBLE);
+        bt_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CustomDialog sDelete= new CustomDialog(context);
+                sDelete.buildDelete(si);
+                sDelete.show();
+                sDelete.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (sDelete.getReturn().equals("")) {
+                            Toast.makeText(context, "刪除失敗!?", Toast.LENGTH_SHORT).show();
+                        } else {
+                            rcontent = sDelete.getReturn();
+                            dismiss();
+                        }
+                    }
+                });
+            }
+        });
+
+        setContentView(alertView);
+        setAlertWindow(0.8, 0.8, true);
+    }
+
+    //Specie Delete
+    public void buildDelete(final SpecieItem si) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertView = inflater.inflate(R.layout.alertdialog_delete, null);    //layout可換!
+
+        TextView tv_content = alertView.findViewById(R.id.tv_content);
+        String content = "真的要刪除 " + si.getsName() + " ？";
+        tv_content.setText(content);
+
+        alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
+            @Override
+            public void onClick(View v) {
+                String DELETE_SPECIE_TABLE = "DELETE FROM specie WHERE specie_id=" + si.getsId();
+                //mSQLiteDatabase.execSQL(DELETE_FOOD_TABLE);
+                rcontent = DELETE_SPECIE_TABLE;
+                dismiss();
+                // TODO: 2018/9/5 若刪除 原用此種類者改為????? 內建"?"種類?
+            }
+        });
+
+        alertView.findViewById(R.id.bt_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancel();
+            }
+        });
+
+        setContentView(alertView);
+        setAlertWindow(0.6, 0.7, true);
+    }
+
 
     //視窗大小設定
     private void setAlertWindow(double w, double h, boolean touchOut){

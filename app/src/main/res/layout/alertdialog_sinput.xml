@@ -32,6 +32,7 @@
                 android:layout_width="95dp"
                 android:layout_marginRight="15dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:text="刪除" />
 
             <Button

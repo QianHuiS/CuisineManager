@@ -23,14 +23,51 @@
         android:paddingLeft="30dp"
         android:paddingRight="30dp">
 
-        <ImageView
-            android:id="@+id/imageView"
+        <FrameLayout
+            style="@style/btimage_fitem"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="80dp"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
             android:layout_weight="4"
-            app:srcCompat="@drawable/story_movie" />
+            android:background="@drawable/category_bg"
+            android:padding="5dp">
+
+            <ImageButton
+                android:id="@+id/ib_specie"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#00000000"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/story_movie" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:gravity="center"
+                android:text="菜"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_showslife"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="left|top"
+                android:background="@drawable/calculator_key_brown"
+                android:gravity="center"
+                android:hint="0"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_showsname"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:hint="什毛類"
+                android:padding="2dp"
+                android:textSize="12sp" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

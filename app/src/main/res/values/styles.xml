@@ -45,7 +45,6 @@
 
     <style name="btimage_fitem">
         <item name="android:background">@drawable/selector_fselectitem</item>
-        <item name="android:cacheColorHint">#e0000000</item>
     </style>
 
     <style name="tv_headline">
