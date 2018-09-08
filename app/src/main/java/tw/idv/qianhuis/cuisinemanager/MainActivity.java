@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     boolean refIsClick= false;
     boolean frsIsClick= false;
     boolean searchIsClick= false;
-    // TODO: 2018/9/4 待優化, 按鈕的互斥設定, 及上下列切換. (選擇器?)
+    final String ALL = "1";
+    // TODO: 2018/9/4 待優化, 按鈕的互斥設定. (radiogroup?)
 
     ImageView iv_nodata;
     GridView gv_food;
@@ -172,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         specieList();   //查詢種類DB放入種類list.
-        final String ALL = "1";
         showList(ALL);
 
         //上下列切換顯示/隱藏
@@ -286,15 +286,16 @@ public class MainActivity extends AppCompatActivity {
                 c2= mSQLiteDatabase.rawQuery(SELECT, null);
                 c2.moveToFirst();
 
+                // TODO: 2018/9/3 待優化, specieDB資料表為空.指定s_id不存在(關聯刪除問題?建立不可刪默認種類)例外狀況.
                 SpecieItem si;
-                //if(c2.getCount()==0)    si= null;   // TODO: 2018/9/3 待優化, specieDB資料表為空.指定s_id不存在(關聯刪除問題?)例外狀況.
+                //if(c2.getCount()==0)    si= null;
                 //else {
                     si = new SpecieItem(c2.getString(0),
                             c2.getString(1), c2.getString(2));
                 //}
                 c2.close();
 
-                // TODO: 2018/8/23 待優化, 如何取得外來鍵欄位.
+                // TODO: 2018/8/23 問題, 如何取得外來鍵欄位.
                 FoodItem fi= new FoodItem(c1.getString(0),
                         c1.getString(1), c1.getString(2),
                         c1.getString(3), c1.getString(4),
@@ -317,7 +318,8 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
-            // TODO: 2018/8/14 待修正, 食物種類圖樣顯示.
+            // TODO: 2018/8/14 待修正, 食物種類圖樣顯示.   1
+            // TODO: 2018/9/6 待修正, 美工設計製作.      2
             SimpleAdapter adapter= new SimpleAdapter(MainActivity.this,
                     l_food, R.layout.gridview_fridge,
                     new String[]{"food_specie", "food_name", "food_life"},
@@ -402,7 +404,8 @@ public class MainActivity extends AppCompatActivity {
             gv_food.performItemClick(null, 0, 0);
         }
 
-        // TODO: 2018/8/21 待修正, 非et輸入資料. 3-1
+        // TODO: 2018/8/21 待優化, 數量單位輸入改用下拉選單?
+        // TODO: 2018/9/6 待優化, 自訂鍵盤顯示.
         //新增food資料
         bt_add.setOnClickListener(new View.OnClickListener() {  //
             @Override
@@ -441,7 +444,6 @@ public class MainActivity extends AppCompatActivity {
                             if(fsearch.getReturn().equals("")) {
                                 Toast.makeText(MainActivity.this, "查詢失敗!?", Toast.LENGTH_SHORT).show();
                             } else {
-                                // TODO: 2018/8/21 待優化, 模糊查詢/同欄位多選項查詢(checkbox). 3-2
                                 showList(fsearch.getReturn());
                                 Toast.makeText(MainActivity.this, "查詢成功!!", Toast.LENGTH_SHORT).show();
                             }
@@ -452,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
                     frsIsClick= false;
                     searchIsClick= true;
                 } else {
-                    showList(WHERE);
+                    showList(ALL);
                     searchIsClick= false;
                 }
             }
@@ -520,6 +522,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 isExpired= !isExpired;  //若點擊, 則開啟即期排序.
                 showList(WHERE);
+                // TODO: 2018/9/6 待優化, 廣播提示將過期食品.
             }
         });
 

@@ -27,13 +27,13 @@
 
         <TextView
             android:id="@+id/tv_showflife"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_gravity="right|top"
             android:background="@drawable/calculator_key_brown"
             android:gravity="center"
-            android:text="0"
-            android:textSize="14sp" />
+            android:text="00"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tv_showfname"

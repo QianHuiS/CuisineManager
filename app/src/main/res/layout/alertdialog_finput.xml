@@ -49,13 +49,13 @@
 
             <TextView
                 android:id="@+id/tv_showslife"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_gravity="left|top"
                 android:background="@drawable/calculator_key_brown"
                 android:gravity="center"
-                android:textSize="14sp"
-                android:hint="0" />
+                android:hint="0"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tv_showsname"
@@ -146,16 +146,43 @@
                         android:id="@+id/et_funit"
                         style="@style/et_content"
                         android:layout_weight="1"
-                        android:hint="一隻菜"
+                        android:hint="隻"
                         android:inputType="textPersonName" />
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/et_fposition"
-                    style="@style/et_content"
+                <RadioGroup
+                    android:id="@+id/rg_fposition"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="菜菜ㄉ家"
-                    android:inputType="textPersonName" />
+                    android:orientation="horizontal" >
+<!--
+                    <EditText
+                        android:id="@+id/et_fposition"
+                        style="@style/et_content"
+                        android:layout_weight="1"
+                        android:hint="菜菜ㄉ家"
+                        android:inputType="textPersonName" />
+-->
+                    <RadioButton
+                        android:id="@+id/rb_freezing"
+                        style="@style/rg_content"
+                        android:layout_weight="1"
+                        android:text="冷凍室" />
+
+                    <RadioButton
+                        android:id="@+id/rb_refrigerated"
+                        style="@style/rg_content"
+                        android:layout_weight="1"
+                        android:text="冷藏室" />
+
+                    <RadioButton
+                        android:id="@+id/rb_fresh"
+                        style="@style/rg_content"
+                        android:layout_weight="1"
+                        android:text="保鮮室" />
+
+                </RadioGroup>
 
                 <Button
                     android:id="@+id/bt_fstoragetime"

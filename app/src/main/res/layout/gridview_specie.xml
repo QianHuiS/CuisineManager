@@ -36,13 +36,13 @@
 
         <TextView
             android:id="@+id/tv_showslife"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_gravity="left|top"
             android:background="@drawable/calculator_key_brown"
             android:gravity="center"
             android:hint="0"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
     </FrameLayout>
 
 </FrameLayout>

@@ -14,10 +14,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,6 +89,27 @@ public class CustomDialog extends Dialog {
             }
         });
 
+        //位置輸入
+        final RadioGroup rg_fposition= alertView.findViewById(R.id.rg_fposition);
+        rg_fposition.setTag("");
+        rg_fposition.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId) {
+                    case R.id.rb_freezing:
+                        rg_fposition.setTag("冷凍室");
+                        break;
+                    case R.id.rb_refrigerated:
+                        rg_fposition.setTag("冷藏室");
+                        break;
+                    case R.id.rb_fresh:
+                        rg_fposition.setTag("保鮮室");
+                        break;
+                    default:
+                }
+            }
+        });
+
         //日期輸入
         final Button bt_fstoragetime= alertView.findViewById(R.id.bt_fstoragetime);
         bt_fstoragetime.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +142,7 @@ public class CustomDialog extends Dialog {
                 EditText et_fname= alertView.findViewById(R.id.et_fname);
                 EditText et_fquantity= alertView.findViewById(R.id.et_fquantity);
                 EditText et_funit= alertView.findViewById(R.id.et_funit);
-                EditText et_fposition= alertView.findViewById(R.id.et_fposition);
+                //EditText et_fposition= alertView.findViewById(R.id.et_fposition);
 
                 //取得填寫的內容
                 String[] fcontent=new String[6];
@@ -125,7 +150,7 @@ public class CustomDialog extends Dialog {
                 fcontent[1]= et_fname.getText().toString();
                 fcontent[2]= et_fquantity.getText().toString();
                 fcontent[3]= et_funit.getText().toString();
-                fcontent[4]= et_fposition.getText().toString();
+                fcontent[4]= rg_fposition.getTag().toString();
                 fcontent[5]= bt_fstoragetime.getText().toString();
 
                 //檢查是否有欄位為空
@@ -174,7 +199,8 @@ public class CustomDialog extends Dialog {
         EditText et_fname= alertView.findViewById(R.id.et_fname);
         EditText et_fquantity= alertView.findViewById(R.id.et_fquantity);
         EditText et_funit= alertView.findViewById(R.id.et_funit);
-        EditText et_fposition= alertView.findViewById(R.id.et_fposition);
+        //EditText et_fposition= alertView.findViewById(R.id.et_fposition);
+        final RadioGroup rg_fposition= alertView.findViewById(R.id.rg_fposition);
         final Button bt_fstoragetime= alertView.findViewById(R.id.bt_fstoragetime);
 
         //傳入原資料
@@ -184,10 +210,22 @@ public class CustomDialog extends Dialog {
         et_fname.setText(fi.getfName());
         et_fquantity.setText(fi.getfQuantity());
         et_funit.setText(fi.getfUnit());
-        et_fposition.setText(fi.getfPosition());
+        //et_fposition.setText(fi.getfPosition());
+        rg_fposition.setTag(fi.getfPosition());
+        switch(rg_fposition.getTag().toString()) {  //check rb.
+            case "冷凍室":
+                rg_fposition.check(R.id.rb_freezing);
+                break;
+            case "冷藏室":
+                rg_fposition.check(R.id.rb_refrigerated);
+                break;
+            case "保鮮室":
+                rg_fposition.check(R.id.rb_fresh);
+                break;
+        }
         bt_fstoragetime.setText(fi.getfStoragetime());
 
-        //種類輸入
+        //設定種類
         ib_specie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,6 +252,25 @@ public class CustomDialog extends Dialog {
                         }
                     }
                 });
+            }
+        });
+
+        //設定位置
+        rg_fposition.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId) {
+                    case R.id.rb_freezing:
+                        rg_fposition.setTag("冷凍室");
+                        break;
+                    case R.id.rb_refrigerated:
+                        rg_fposition.setTag("冷藏室");
+                        break;
+                    case R.id.rb_fresh:
+                        rg_fposition.setTag("保鮮室");
+                        break;
+                    default:
+                }
             }
         });
 
@@ -249,7 +306,7 @@ public class CustomDialog extends Dialog {
                 EditText et_fname= alertView.findViewById(R.id.et_fname);   //為避免EditText final無法編輯, 重新宣告連接xml.
                 EditText et_fquantity= alertView.findViewById(R.id.et_fquantity);
                 EditText et_funit= alertView.findViewById(R.id.et_funit);
-                EditText et_fposition= alertView.findViewById(R.id.et_fposition);
+                //EditText et_fposition= alertView.findViewById(R.id.et_fposition);
 
                 //取得填寫的內容
                 String[] fcontent=new String[7];
@@ -258,7 +315,7 @@ public class CustomDialog extends Dialog {
                 fcontent[2]= et_fname.getText().toString();
                 fcontent[3]= et_fquantity.getText().toString();
                 fcontent[4]= et_funit.getText().toString();
-                fcontent[5]= et_fposition.getText().toString();
+                fcontent[5]= rg_fposition.getTag().toString();
                 fcontent[6]= bt_fstoragetime.getText().toString();
 
                 //檢查是否有欄位為空
@@ -355,6 +412,7 @@ public class CustomDialog extends Dialog {
         setAlertWindow(0.8, 0.7, true);
     }
 
+    // TODO: 2018/9/6 待優化, 更多搜尋範圍; between兩日期.多種類.多名稱...?
     //Food Search
     public void buildSearch(final ArrayList<HashMap<String, Object>> l_specie) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -392,6 +450,35 @@ public class CustomDialog extends Dialog {
             }
         });
 
+        //位置按鈕
+        final CheckBox cb_freezing= alertView.findViewById(R.id.cb_freezing);
+        final CheckBox cb_refrigerated= alertView.findViewById(R.id.cb_refrigerated);
+        final CheckBox cb_fresh= alertView.findViewById(R.id.cb_fresh);
+        cb_freezing.setTag("");
+        cb_refrigerated.setTag("");
+        cb_fresh.setTag("");
+        cb_freezing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {    //buttonView為當前觸發的cb, isChecked為cb的選取狀態.
+                if(isChecked) cb_freezing.setTag("冷凍室");
+                else cb_freezing.setTag("");
+            }
+        });
+        cb_refrigerated.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {    //buttonView為當前觸發的cb, isChecked為cb的選取狀態.
+                if(isChecked) cb_refrigerated.setTag("冷藏室");
+                else cb_refrigerated.setTag("");
+            }
+        });
+        cb_fresh.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {    //buttonView為當前觸發的cb, isChecked為cb的選取狀態.
+                if(isChecked) cb_fresh.setTag("保鮮室");
+                else cb_fresh.setTag("");
+            }
+        });
+
         //日期按鈕
         final Button bt_fstoragetime= alertView.findViewById(R.id.bt_fstoragetime);
         bt_fstoragetime.setOnClickListener(new View.OnClickListener() {
@@ -422,19 +509,27 @@ public class CustomDialog extends Dialog {
             public void onClick(View v) {
                 //連接layoutXML
                 EditText et_fname= alertView.findViewById(R.id.et_fname);
-                EditText et_fposition= alertView.findViewById(R.id.et_fposition);
+                //EditText et_fposition= alertView.findViewById(R.id.et_fposition);
+                String fposition= "";
+                //若cb被選重則加入字串(以空白間隔).
+                if(!cb_freezing.getTag().toString().equals("")) fposition+=cb_freezing.getTag().toString()+" ";
+                if(!cb_refrigerated.getTag().toString().equals("")) fposition+=cb_refrigerated.getTag().toString()+" ";
+                if(!cb_fresh.getTag().toString().equals(""))    fposition+=cb_fresh.getTag().toString()+" ";
+                fposition= fposition.trim();     //將字串末的空白去除.
+                fposition= fposition.replaceAll(" ", "', '");     //則將所有空白替換成參數的字串.
+                //fposition.replaceAll(" ", "' OR food_position= '");
 
                 String[] fcontent=new String[4];
                 fcontent[0]= ib_specie.getTag().toString();
                 fcontent[1]= et_fname.getText().toString();
-                fcontent[2]= et_fposition.getText().toString();
+                fcontent[2]= fposition;
                 fcontent[3]= bt_fstoragetime.getText().toString();
 
                 //取得填寫的內容
                 String[] column=new String[4];
                 column[0]= "food_specie= '"+ fcontent[0] +"'";  //種類!!
-                column[1]= "food_name like '%"+ fcontent[1] +"%'";
-                column[2]= "food_position= '"+ fcontent[2] +"'";
+                column[1]= "food_name LIKE '%"+ fcontent[1] +"%'";
+                column[2]= "food_position IN ('"+ fcontent[2] +"')";
                 column[3]= "food_storagetime= '"+ fcontent[3] +"'";
 
                 boolean first= true;
@@ -448,7 +543,6 @@ public class CustomDialog extends Dialog {
                         WHERE += column[i];
                     }
                 }
-                //Toast.makeText(context, WHERE, Toast.LENGTH_LONG).show();
 
                 rcontent= WHERE;     //相當於return String.
                 dismiss();
