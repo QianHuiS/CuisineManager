@@ -1,91 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/bg_main">
+    tools:context="tw.idv.qianhuis.cuisinemanager.MainActivity"
+    android:background="@drawable/fridge_bg">
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-            <Button
-                android:id="@+id/bt_next"
-                style="@style/bt_mini"
-                android:layout_weight="1"
-                android:text="↓" />
-
-            <LinearLayout
-                android:id="@+id/ll_next1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <Button
-                    android:id="@+id/bt_add"
-                    style="@style/bt_mini"
-                    android:layout_weight="1"
-                    android:text="＋" />
-
-                <Button
-                    android:id="@+id/bt_search"
-                    style="@style/bt_mini"
-                    android:layout_weight="1"
-                    android:text="查" />
-
-                <Button
-                    android:id="@+id/bt_ssetting"
-                    style="@style/bt_mini"
-                    android:layout_weight="1"
-                    android:text="設定" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_next2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <Button
-                    android:id="@+id/bt_freezing"
-                    style="@style/bt_big"
-                    android:layout_weight="1"
-                    android:text="冷凍" />
-
-                <Button
-                    android:id="@+id/bt_refrigerated"
-                    style="@style/bt_big"
-                    android:layout_weight="1"
-                    android:text="冷藏" />
-
-                <Button
-                    android:id="@+id/bt_fresh"
-                    style="@style/bt_big"
-                    android:layout_weight="1"
-                    android:text="保鮮" />
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/bt_expired"
-                style="@style/bt_mini"
-                android:layout_weight="1"
-                android:text="即期" />
-
-        </LinearLayout>
+        android:layout_width="400dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center|left"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/foodgv_bg"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
         <ImageView
             android:id="@+id/iv_nodata"
@@ -96,86 +27,194 @@
 
         <GridView
             android:id="@+id/gv_food"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:horizontalSpacing="3dp"
-            android:numColumns="4"
+            android:layout_margin="25dp"
+            android:numColumns="3"
             android:verticalSpacing="3dp">
 
         </GridView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/bt_next"
+            style="@style/bt_foodgv1"
+            android:layout_weight="1"
+            android:background="@drawable/foodgvbt_first"
+            android:text="↓" />
+
+        <LinearLayout
+            android:id="@+id/ll_next1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <Button
+                android:id="@+id/bt_add"
+                style="@style/bt_foodgv2"
+                android:layout_weight="1"
+                android:text="＋" />
+
+            <Button
+                android:id="@+id/bt_search"
+                style="@style/bt_foodgv2"
+                android:layout_weight="1"
+                android:text="查" />
+
+            <Button
+                android:id="@+id/bt_ssetting"
+                style="@style/bt_foodgv2"
+                android:layout_weight="1"
+                android:text="種類" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_next2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/bt_freezing"
+                style="@style/bt_foodgv2"
+                android:layout_weight="1"
+                android:text="冷凍" />
+
+            <Button
+                android:id="@+id/bt_refrigerated"
+                style="@style/bt_foodgv2"
+                android:layout_weight="1"
+                android:text="冷藏" />
+
+            <Button
+                android:id="@+id/bt_fresh"
+                style="@style/bt_foodgv2"
+                android:layout_weight="1"
+                android:text="保鮮" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_expired"
+            style="@style/bt_foodgv3"
+            android:layout_weight="1"
+            android:text="即期" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_width="230dp"
+        android:layout_height="350dp"
+        android:layout_gravity="center|right"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/fooddetail_bg"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textView"
-            style="@style/tv_headline"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3.5"
-            android:text="詳 細 資 料" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2.5"
-            android:orientation="horizontal">
+            android:layout_weight="4"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/bt_delete"
-                    style="@style/bt_mini"
-                    android:text="刪" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/bt_revise"
-                    style="@style/bt_mini"
-                    android:text="改" />
+                    <Button
+                        android:id="@+id/bt_delete"
+                        style="@style/bt_mini"
+                        android:text="刪" />
 
-                <Button
-                    android:id="@+id/bt_select"
-                    style="@style/bt_mini"
-                    android:text="選" />
+                    <Button
+                        android:id="@+id/bt_revise"
+                        style="@style/bt_mini"
+                        android:text="改" />
+
+                    <Button
+                        android:id="@+id/bt_select"
+                        style="@style/bt_mini"
+                        android:text="選" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_fname"
+                        style="@style/tv_title"
+                        android:hint="我是菜" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="right"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_fquantity"
+                            style="@style/tv_content"
+                            android:layout_width="wrap_content"
+                            android:gravity="center"
+                            android:hint="0.0"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_funit"
+                            style="@style/tv_content"
+                            android:layout_width="wrap_content"
+                            android:hint="隻"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="20dp">
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/sitemall_bg">
 
                 <ImageView
                     android:id="@+id/iv_simage"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
                     app:srcCompat="@drawable/story_movie" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:gravity="center"
-                    android:text="菜"
-                    android:textSize="14sp" />
-
-                <TextView
                     android:id="@+id/tv_slife"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_gravity="left|top"
-                    android:background="@drawable/calculator_key_brown"
+                    android:layout_marginLeft="5dp"
                     android:gravity="center"
                     android:hint="0"
                     android:textSize="14sp" />
@@ -183,7 +222,7 @@
                 <TextView
                     android:id="@+id/tv_sname"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="bottom"
                     android:gravity="center"
                     android:hint="什毛類"
@@ -197,43 +236,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:orientation="vertical"
+            android:layout_weight="3"
             android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="20dp">
+            android:paddingRight="15dp">
 
-            <LinearLayout
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingRight="2dp">
-
-                <TextView
-                    android:id="@+id/tv_fname"
-                    style="@style/tv_title"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:hint="我是菜" />
-
-                <TextView
-                    android:id="@+id/tv_fquantity"
-                    style="@style/tv_content"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:hint="0.0"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tv_funit"
-                    style="@style/tv_content"
-                    android:layout_weight="2"
-                    android:hint="隻"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/fridge_line"
+                android:scaleType="fitXY"
+                android:layout_marginBottom="15dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -244,8 +259,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:orientation="vertical">
 
                     <TextView
@@ -264,7 +279,7 @@
                         style="@style/tv_content"
                         android:layout_weight="1"
                         android:gravity="center|end"
-                        android:text="過期日：" />
+                        android:text="有效期限：" />
 
                     <TextView
                         style="@style/tv_content"
@@ -304,8 +319,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <TextView
@@ -331,4 +346,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

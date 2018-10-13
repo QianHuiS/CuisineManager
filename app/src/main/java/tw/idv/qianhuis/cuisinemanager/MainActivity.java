@@ -32,16 +32,10 @@ public class MainActivity extends AppCompatActivity {
     //變數
     Button bt_next, bt_expired;
     LinearLayout ll_next1, ll_next2;
-    boolean isExpired= false;
 
     Button bt_add, bt_search, bt_ssetting;   //expiration date 到期日.    //bt_側欄
     Button bt_freezing, bt_refrigerated, bt_fresh;
-    boolean frzIsClick= false;
-    boolean refIsClick= false;
-    boolean frsIsClick= false;
-    boolean searchIsClick= false;
     final String ALL = "1";
-    // TODO: 2018/9/4 待優化, 按鈕的互斥設定. (radiogroup?)
 
     ImageView iv_nodata;
     GridView gv_food;
@@ -74,10 +68,9 @@ public class MainActivity extends AppCompatActivity {
         String CREATE_FOOD_TABLE = "CREATE TABLE IF NOT EXISTS " +  //建立表單(若表單不存在!!). 建錯移除app.
                 "food (" +
                 "food_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "food_specie INTEGER REFERENCES specie(specie_id), " +     //外來鍵: 參照 某表 (某欄位).
+                "food_specie INTEGER, " +     // REFERENCES specie(specie_id)外來鍵: 參照 某表 (某欄位).
                 "food_name TEXT, food_quantity REAL, food_unit TEXT, " +
                 "food_position TEXT, food_storagetime TEXT)";
-                //"FOREIGN KEY(food_specie) REFERENCES specie(specie_id))";
         mSQLiteDatabase.execSQL(CREATE_FOOD_TABLE);     //執行SQL指令的字串.
 
         String CREATE_SPECIE_TABLE = "CREATE TABLE IF NOT EXISTS " +  //建立表單(若表單不存在!!). 建錯移除app.
@@ -122,10 +115,18 @@ public class MainActivity extends AppCompatActivity {
         tv_expirationdate= findViewById(R.id.tv_expirationdate);
         tv_foodlife= findViewById(R.id.tv_foodlife);
 
+        Cursor c;
+        //若種類table為空, 新增預設種類"未知類".
+        c = mSQLiteDatabase.rawQuery("SELECT * FROM specie WHERE 1", null);
+        if(c.getCount()==0) {
+            String INSERT_S = "INSERT INTO specie (specie_name, specie_life) " +
+                    "VALUES('未知類', '0')";
+            mSQLiteDatabase.execSQL(INSERT_S);
+        }
+        c.close();
 
         //放入測試用data
         //判斷table內是否為空, 若為空則放入資料.
-        Cursor c;
         int num=1;
         c = mSQLiteDatabase.rawQuery("SELECT * FROM food WHERE 1", null);
         num=c.getCount();
@@ -134,17 +135,18 @@ public class MainActivity extends AppCompatActivity {
         if(num==0) {
             for(int i=1; i<4; i++) {
                 String INSERT_S = "INSERT INTO specie (specie_name, specie_life) " +
-                        "VALUES('種類" + i + "', '" + i + "')";
+                        "VALUES('種類" + (i) + "', '" + (i+3) + "')";
                 mSQLiteDatabase.execSQL(INSERT_S);
             }
             c=mSQLiteDatabase.rawQuery("SELECT * FROM specie WHERE 1 ", null);
             c.moveToFirst();
+            c.moveToNext();
 
             for(int i=0; i<3; i++) {
                 String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
-                        "VALUES('"+c.getString(0)+"', '高麗菜"+i+"', '1.5', " +
-                        "'顆', '保鮮室', '2018-08-21')";
+                        "VALUES('"+c.getString(0)+"', '高麗菜"+(i+1)+"', '1.5', " +
+                        "'顆', '保鮮室', '2018-10-10')";
                 mSQLiteDatabase.execSQL(INSERT_F);
             }
             c.moveToNext();
@@ -152,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
                         "VALUES('"+c.getString(0)+"', '地瓜"+i+"', '2', " +
-                        "'顆', '冷凍室', '2018-08-22')";
+                        "'顆', '冷凍室', '2018-10-11')";
                 mSQLiteDatabase.execSQL(INSERT_F);
             }
             c.moveToNext();
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
                         "VALUES('"+c.getString(0)+"', '檸檬愛玉"+i+"', '1', " +
-                        "'罐', '冷藏室', '2018-08-23')";
+                        "'罐', '冷藏室', '2018-10-12')";
                 mSQLiteDatabase.execSQL(INSERT_F);
             }
             c.close();
@@ -196,6 +198,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //是否有點擊三bt
+                if(!bt_freezing.isSelected()) {
+                    String FREEZING = "food_position = '冷凍室' ";
+                    bt_freezing.setSelected(true);
+                    bt_refrigerated.setSelected(false);
+                    bt_fresh.setSelected(false);
+                    bt_search.setSelected(false);
+                    showList(FREEZING);
+                } else {
+                    bt_freezing.setSelected(false);
+                    showList(ALL);
+                }
+                /*
                 if(!frzIsClick) {
                     String FREEZING = "food_position = '冷凍室' ";
                     showList(FREEZING);
@@ -207,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
                     showList(ALL);
                     frzIsClick = false;
                 }
+                */
             }
         });
 
@@ -214,6 +229,18 @@ public class MainActivity extends AppCompatActivity {
         bt_refrigerated.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!bt_refrigerated.isSelected()) {
+                    String REFRIGERATED = "food_position = '冷藏室' ";
+                    bt_freezing.setSelected(false);
+                    bt_refrigerated.setSelected(true);
+                    bt_fresh.setSelected(false);
+                    bt_search.setSelected(false);
+                    showList(REFRIGERATED);
+                } else {
+                    bt_refrigerated.setSelected(false);
+                    showList(ALL);
+                }
+                /*
                 if(!refIsClick) {
                     String REFRIGERATED = "food_position = '冷藏室' ";
                     showList(REFRIGERATED);
@@ -225,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
                     showList(ALL);
                     refIsClick = false;
                 }
+                */
             }
         });
 
@@ -232,6 +260,18 @@ public class MainActivity extends AppCompatActivity {
         bt_fresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!bt_fresh.isSelected()) {
+                    String FRESH = "food_position = '保鮮室' ";
+                    bt_freezing.setSelected(false);
+                    bt_refrigerated.setSelected(false);
+                    bt_fresh.setSelected(true);
+                    bt_search.setSelected(false);
+                    showList(FRESH);
+                } else {
+                    bt_fresh.setSelected(false);
+                    showList(ALL);
+                }
+                /*
                 if(!frsIsClick) {
                     String FRESH = "food_position = '保鮮室' ";
                     showList(FRESH);
@@ -243,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
                     showList(ALL);
                     frsIsClick = false;
                 }
+                */
             }
         });
 
@@ -281,21 +322,17 @@ public class MainActivity extends AppCompatActivity {
             iv_nodata.setVisibility(View.GONE); //有資料則不顯示圖片.
 
             while(!c1.isAfterLast()){
+                //取出種類內容(同等外來鍵效果)
                 Cursor c2;  //透過food的specieID欄位, 查詢specie資料並取出.
                 String SELECT= "SELECT * FROM specie WHERE specie_id= " + (c1.getString(1));
                 c2= mSQLiteDatabase.rawQuery(SELECT, null);
                 c2.moveToFirst();
 
-                // TODO: 2018/9/3 待優化, specieDB資料表為空.指定s_id不存在(關聯刪除問題?建立不可刪默認種類)例外狀況.
                 SpecieItem si;
-                //if(c2.getCount()==0)    si= null;
-                //else {
-                    si = new SpecieItem(c2.getString(0),
+                si = new SpecieItem(c2.getString(0),
                             c2.getString(1), c2.getString(2));
-                //}
                 c2.close();
 
-                // TODO: 2018/8/23 問題, 如何取得外來鍵欄位.
                 FoodItem fi= new FoodItem(c1.getString(0),
                         c1.getString(1), c1.getString(2),
                         c1.getString(3), c1.getString(4),
@@ -308,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
             c1.close();
 
             //即期排序
-            if(isExpired) {     //bt_即期.setOnClick{ isflag= !isflag; } → if(isflag) 排序;
+            if(bt_expired.isSelected()) {     //bt_即期.setOnClick{ isflag= !isflag; } → if(isflag) 排序;
                 Collections.sort(l_food, new Comparator<HashMap<String, Object>>() {
                     public int compare(HashMap<String, Object> o1, HashMap<String, Object> o2) {
                         Integer fLife1 = Integer.valueOf(o1.get("food_life").toString());  //從l_food裡面拿出來的第一個.
@@ -319,7 +356,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // TODO: 2018/8/14 待修正, 食物種類圖樣顯示.   1
-            // TODO: 2018/9/6 待修正, 美工設計製作.      2
             SimpleAdapter adapter= new SimpleAdapter(MainActivity.this,
                     l_food, R.layout.gridview_fridge,
                     new String[]{"food_specie", "food_name", "food_life"},
@@ -331,7 +367,10 @@ public class MainActivity extends AppCompatActivity {
             gv_food.setOnItemClickListener(new AdapterView.OnItemClickListener() {  //所選項目效果, 取出l_food資料, 顯示.
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    // TODO: 2018/8/14 待優化, 預設選取項目, 所選項目美工效果.
+                    //所選項目美工效果
+                    gv_food.getAdapter().getView(position, view, parent).setSelected(true);
+                    //關鍵為, 取得指定item的view, 設定狀態state_selected; Adapter介面下getView()即為item所屬view.
+
                     final FoodItem fi= new FoodItem(l_food.get(position));  //取得點擊的項目, 變成一物件.
 
                     //啟用bt
@@ -361,6 +400,7 @@ public class MainActivity extends AppCompatActivity {
                             fDelete.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
+                                    /*
                                     if(fDelete.getReturn().equals("")){
                                         Toast.makeText(MainActivity.this, "刪除失敗!?", Toast.LENGTH_SHORT).show();
                                     } else {
@@ -368,6 +408,8 @@ public class MainActivity extends AppCompatActivity {
                                         showList(WHERE); //刷新lv.
                                         Toast.makeText(MainActivity.this, "刪除成功!!", Toast.LENGTH_SHORT).show();
                                     }
+                                    */
+                                    showList(WHERE); //刷新lv.
                                 }
                             });
                         }
@@ -384,6 +426,7 @@ public class MainActivity extends AppCompatActivity {
                             fRevise.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
+                                    /*
                                     if(fRevise.getReturn().equals("")){
                                         Toast.makeText(MainActivity.this, "修改失敗!?", Toast.LENGTH_SHORT).show();
                                     } else {
@@ -391,6 +434,8 @@ public class MainActivity extends AppCompatActivity {
                                         showList(WHERE); //刷新lv.
                                         Toast.makeText(MainActivity.this, "修改成功!!", Toast.LENGTH_SHORT).show();
                                     }
+                                    */
+                                    showList(WHERE); //刷新lv.
                                 }
                             });
 
@@ -400,8 +445,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            // TODO: 2018/10/13 待修正, 預設點擊沒有setSelected()效果.
             //預設點擊項目
-            gv_food.performItemClick(null, 0, 0);
+            gv_food.getOnItemClickListener().onItemClick(
+                    null,null,0,0);
+            /*
+            gv_food.performItemClick(
+                    gv_food.getAdapter().getView(0,null,null),
+                    0, 0);
+
+            gv_food.performItemClick(
+                    gv_food.getChildAt(0),
+                    0,
+                    0);*/
+            //View: The view within the AdapterView that was clicked.
         }
 
         // TODO: 2018/8/21 待優化, 數量單位輸入改用下拉選單?
@@ -417,6 +474,7 @@ public class MainActivity extends AppCompatActivity {
                 fAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
+                        /*
                         if(fAdd.getReturn().equals("")){
                             Toast.makeText(MainActivity.this, "新增失敗!?", Toast.LENGTH_SHORT).show();
                         } else {
@@ -424,6 +482,8 @@ public class MainActivity extends AppCompatActivity {
                             showList(WHERE); //刷新lv.
                             Toast.makeText(MainActivity.this, "新增成功!!", Toast.LENGTH_SHORT).show();
                         }
+                        */
+                        showList(WHERE); //刷新lv.
                     }
                 });
             }
@@ -434,7 +494,8 @@ public class MainActivity extends AppCompatActivity {
         bt_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!searchIsClick) {
+                if(!bt_search.isSelected()) {
+
                     final CustomDialog fsearch= new CustomDialog(MainActivity.this);
                     fsearch.buildSearch(l_specie);
                     fsearch.show();
@@ -445,17 +506,23 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "查詢失敗!?", Toast.LENGTH_SHORT).show();
                             } else {
                                 showList(fsearch.getReturn());
+                                bt_freezing.setSelected(false);
+                                bt_refrigerated.setSelected(false);
+                                bt_fresh.setSelected(false);
+                                bt_search.setSelected(true);
                                 Toast.makeText(MainActivity.this, "查詢成功!!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
+                    /*
                     frzIsClick= false;
                     refIsClick= false;
                     frsIsClick= false;
                     searchIsClick= true;
+                    */
                 } else {
+                    bt_search.setSelected(false);
                     showList(ALL);
-                    searchIsClick= false;
                 }
             }
         });
@@ -470,6 +537,7 @@ public class MainActivity extends AppCompatActivity {
                 specie.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
+                        //判斷操作為新增或修改
                         if(specie.getReturn().equals("ADD")) {
                             final CustomDialog sAdd= new CustomDialog(MainActivity.this);
                             sAdd.buildSInput();
@@ -477,6 +545,7 @@ public class MainActivity extends AppCompatActivity {
                             sAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
+                                    /*
                                     if (sAdd.getReturn().equals("")) {
                                         Toast.makeText(MainActivity.this, "新增失敗!?", Toast.LENGTH_SHORT).show();
                                         // TODO: 2018/9/5 待優化, 只能在設定中新增修改種類, 改進為即時新增及刷新種類.
@@ -486,6 +555,9 @@ public class MainActivity extends AppCompatActivity {
                                         specieList();
                                         showList(WHERE);
                                     }
+                                    */
+                                    specieList();
+                                    showList(WHERE);
                                 }
                             });
                         } else if(!specie.getReturn().equals("")) {
@@ -499,6 +571,7 @@ public class MainActivity extends AppCompatActivity {
                             sRevise.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
+                                    /*
                                     if (sRevise.getReturn().equals("")) {
                                         Toast.makeText(MainActivity.this, "修改失敗!?", Toast.LENGTH_SHORT).show();
                                         // TODO: 2018/9/5 待優化, 只能在設定中新增修改種類, 改進為即時新增及刷新種類.
@@ -508,6 +581,9 @@ public class MainActivity extends AppCompatActivity {
                                         specieList();
                                         showList(WHERE);
                                     }
+                                    */
+                                    specieList();
+                                    showList(WHERE);
                                 }
                             });
                         }
@@ -520,7 +596,8 @@ public class MainActivity extends AppCompatActivity {
         bt_expired.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isExpired= !isExpired;  //若點擊, 則開啟即期排序.
+                bt_expired.setSelected(!bt_expired.isSelected());
+                //isExpired= !isExpired;  //若點擊, 則開啟即期排序.
                 showList(WHERE);
                 // TODO: 2018/9/6 待優化, 廣播提示將過期食品.
             }

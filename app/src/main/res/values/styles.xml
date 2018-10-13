@@ -18,16 +18,16 @@
     btimage_功能類用途 (fridge/recipe/cuisine bt圖片設定_功能類)
         selector_功能類用途.xml-->
     <style name="bt_big">
-        <item name="android:layout_width">65dp</item>
-        <item name="android:layout_height">45dp</item>
-        <item name="android:background">@drawable/selector_fclickbt</item>  <!--待刪-->
+        <item name="android:layout_width">55dp</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:background">@drawable/selector_fclickbt_big</item>  <!--待刪-->
         <item name="android:textSize">16sp</item>
     </style>
 
     <style name="bt_mini">
-        <item name="android:layout_width">45dp</item>
-        <item name="android:layout_height">45dp</item>
-        <item name="android:background">@drawable/selector_fclickbt</item>  <!--待刪-->
+        <item name="android:layout_width">35dp</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:background">@drawable/selector_fclickbt_mini</item>  <!--待刪-->
         <item name="android:textSize">12sp</item>
     </style>
 
@@ -39,16 +39,37 @@
         <item name="android:hint">yyyy/mm/dd</item>
     </style>
 
-    <style name="btimage_fridge">
-        <item name="android:background">@drawable/calculator_key_ok</item>
+    <style name="item_foodgv">
+        <item name="android:background">@drawable/selector_ffitem</item>
     </style>
 
-    <style name="btimage_fitem">
-        <item name="android:background">@drawable/selector_fselectitem</item>
+    <style name="item_speciegv">
+        <item name="android:background">@drawable/selector_fsitem</item>
+    </style>
+
+    <style name="bt_foodgv1">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/selector_fclickbt_foodgv1</item>  <!--待刪-->
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="bt_foodgv2">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/selector_fclickbt_foodgv2</item>  <!--待刪-->
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="bt_foodgv3">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/selector_fclickbt_foodgv3</item>  <!--待刪-->
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="tv_headline">
-        <item name="android:background">@drawable/category_bg</item>
+        <item name="android:background">@drawable/fridge_title</item>
         <item name="android:gravity">center</item>
         <item name="android:padding">10dp</item>
         <item name="android:textSize">18sp</item>
@@ -78,7 +99,7 @@
     <style name="rg_content">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_story"
+    android:background="@drawable/fridge_bg_v"
     android:orientation="vertical">
 
     <TextView
@@ -23,173 +23,167 @@
         android:paddingLeft="30dp"
         android:paddingRight="30dp">
 
-        <FrameLayout
-            style="@style/btimage_fitem"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:layout_weight="4"
-            android:background="@drawable/category_bg"
-            android:padding="5dp">
-
-            <ImageButton
-                android:id="@+id/ib_specie"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:scaleType="centerInside"
-                android:background="#00000000"
-                app:srcCompat="@drawable/story_movie" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center"
-                android:text="菜"
-                android:textSize="14sp" />
+                style="@style/tv_title"
+                android:layout_weight="1"
+                android:gravity="center|start"
+                android:text="種類：" />
 
-            <TextView
-                android:id="@+id/tv_showslife"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_gravity="left|top"
-                android:background="@drawable/calculator_key_brown"
-                android:gravity="center"
-                android:hint="0"
-                android:textSize="12sp" />
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:background="@drawable/sitemall_bg">
 
-            <TextView
-                android:id="@+id/tv_showsname"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_gravity="bottom"
-                android:gravity="center"
-                android:padding="2dp"
-                android:textSize="12sp"
-                android:hint="什毛類" />
+                <ImageButton
+                    android:id="@+id/ib_specie"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:background="#00000000"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/story_movie" />
 
-        </FrameLayout>
+                <TextView
+                    android:id="@+id/tv_showslife"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="left|top"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    android:hint="0"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_showsname"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
+                    android:hint="什毛類"
+                    android:padding="2dp"
+                    android:textSize="12sp" />
+
+            </FrameLayout>
+        </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <TextView
+                style="@style/tv_title"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:gravity="center|end"
+                android:text="名稱：" />
 
-                <TextView
-                    style="@style/tv_title"
-                    android:gravity="center|end"
-                    android:layout_weight="1"
-                    android:text="名稱：" />
+            <TextView
+                style="@style/tv_title"
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:text="數量：" />
 
-                <TextView
-                    style="@style/tv_title"
-                    android:gravity="center|end"
-                    android:layout_weight="1"
-                    android:text="數量：" />
+            <TextView
+                style="@style/tv_title"
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:text="存放位置：" />
 
-                <TextView
-                    style="@style/tv_title"
-                    android:gravity="center|end"
-                    android:layout_weight="1"
-                    android:text="存放位置：" />
+            <TextView
+                style="@style/tv_title"
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:text="入庫日期：" />
 
-                <TextView
-                    style="@style/tv_title"
-                    android:gravity="center|end"
-                    android:layout_weight="1"
-                    android:text="入庫日期：" />
+        </LinearLayout>
 
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_fname"
+                style="@style/et_content"
+                android:layout_weight="1"
+                android:hint="我是菜"
+                android:inputType="textPersonName" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/et_fname"
+                    android:id="@+id/et_fquantity"
                     style="@style/et_content"
                     android:layout_weight="1"
-                    android:hint="我是菜"
+                    android:hint="666"
+                    android:inputType="number" />
+
+                <TextView
+                    style="@style/tv_title"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:text="單位：" />
+
+                <EditText
+                    android:id="@+id/et_funit"
+                    style="@style/et_content"
+                    android:layout_weight="1"
+                    android:hint="隻"
                     android:inputType="textPersonName" />
+            </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/et_fquantity"
-                        style="@style/et_content"
-                        android:layout_weight="1"
-                        android:hint="666"
-                        android:inputType="number" />
-
-                    <TextView
-                        style="@style/tv_title"
-                        android:gravity="center|end"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="單位：" />
-
-                    <EditText
-                        android:id="@+id/et_funit"
-                        style="@style/et_content"
-                        android:layout_weight="1"
-                        android:hint="隻"
-                        android:inputType="textPersonName" />
-                </LinearLayout>
-
-                <RadioGroup
-                    android:id="@+id/rg_fposition"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" >
-<!--
+            <RadioGroup
+                android:id="@+id/rg_fposition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!--
                     <EditText
                         android:id="@+id/et_fposition"
                         style="@style/et_content"
                         android:layout_weight="1"
                         android:hint="菜菜ㄉ家"
                         android:inputType="textPersonName" />
--->
-                    <RadioButton
-                        android:id="@+id/rb_freezing"
-                        style="@style/rg_content"
-                        android:layout_weight="1"
-                        android:text="冷凍室" />
-
-                    <RadioButton
-                        android:id="@+id/rb_refrigerated"
-                        style="@style/rg_content"
-                        android:layout_weight="1"
-                        android:text="冷藏室" />
-
-                    <RadioButton
-                        android:id="@+id/rb_fresh"
-                        style="@style/rg_content"
-                        android:layout_weight="1"
-                        android:text="保鮮室" />
-
-                </RadioGroup>
-
-                <Button
-                    android:id="@+id/bt_fstoragetime"
+    -->
+                <RadioButton
+                    android:id="@+id/rb_freezing"
+                    style="@style/rg_content"
                     android:layout_weight="1"
-                    style="@style/bt_date" />
+                    android:text="冷凍室" />
 
-            </LinearLayout>
+                <RadioButton
+                    android:id="@+id/rb_refrigerated"
+                    style="@style/rg_content"
+                    android:layout_weight="1"
+                    android:text="冷藏室" />
+
+                <RadioButton
+                    android:id="@+id/rb_fresh"
+                    style="@style/rg_content"
+                    android:layout_weight="1"
+                    android:text="保鮮室" />
+
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/bt_fstoragetime"
+                style="@style/bt_date"
+                android:layout_weight="1" />
 
         </LinearLayout>
 

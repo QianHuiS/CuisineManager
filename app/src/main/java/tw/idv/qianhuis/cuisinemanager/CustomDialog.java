@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.Display;
@@ -30,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /*使用方法:
 * CustomDialog ALERT= new CustomDialog(CONTEXT.this);
 * ALERT.BUILD();
@@ -42,6 +46,11 @@ public class CustomDialog extends Dialog {
     private Context context;
     private String rcontent= "";
 
+    //DB
+    private SQLiteDatabase mSQLiteDatabase= null;
+    private static final String DATABASE_NAME = "app.db";
+    //mSQLiteDatabase = this.openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+
     public CustomDialog(Context context) {
         super(context);
         init(context);
@@ -49,6 +58,7 @@ public class CustomDialog extends Dialog {
 
     private void init(Context context) {
         this.context = context;
+        mSQLiteDatabase = context.openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
         //build();
     }
 
@@ -64,7 +74,7 @@ public class CustomDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 final CustomDialog fSpecie= new CustomDialog(context);
-                fSpecie.buildSselect(l_specie);  // TODO: 2018/9/3 疑問, buildSselect()使用算高耦合度? 是否應該在alert中進行DB查詢?
+                fSpecie.buildSselect(l_specie);
                 fSpecie.show();
                 fSpecie.setOnDismissListener(new OnDismissListener() {
                     @Override
@@ -75,7 +85,7 @@ public class CustomDialog extends Dialog {
 
                             //取得點選的種類ID, 取出詳細資料顯示在button.
                             SpecieItem si= new SpecieItem(l_specie.get(
-                                    Integer.valueOf(fSpecie.getReturn())
+                                    Integer.valueOf(fSpecie.getReturn())    //回傳的item position.
                             ));
 
                             tv_showsname.setText(si.getsName());
@@ -167,10 +177,10 @@ public class CustomDialog extends Dialog {
                             "food_unit, food_position, food_storagetime) " +
                             "VALUES('"+ fcontent[0] +"', '"+ fcontent[1] +"', '"+ fcontent[2] +"', " +
                             "'"+ fcontent[3] +"', '"+ fcontent[4] +"', '"+ fcontent[5] +"')";
-                    //mSQLiteDatabase.execSQL(INSERT_FOOD_TABLE);
-                    //Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
+                    mSQLiteDatabase.execSQL(INSERT_FOOD_TABLE);
+                    Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
 
-                    rcontent= INSERT_FOOD_TABLE;     //相當於return String.
+                    //rcontent= INSERT_FOOD_TABLE;     //相當於return String.
                     dismiss();
                 }
             }
@@ -230,7 +240,7 @@ public class CustomDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 final CustomDialog fSpecie= new CustomDialog(context);
-                fSpecie.buildSselect(l_specie);  // TODO: 2018/9/3 疑問, buildSselect()使用算高耦合度? 是否應該在alert中進行DB查詢?
+                fSpecie.buildSselect(l_specie);
                 fSpecie.show();
                 fSpecie.setOnDismissListener(new OnDismissListener() {
                     @Override
@@ -333,10 +343,10 @@ public class CustomDialog extends Dialog {
                             "food_quantity="+ fcontent[3] +", food_unit='"+ fcontent[4] +"', " +
                             "food_position='"+ fcontent[5] +"', food_storagetime='"+ fcontent[6] +"' " +
                             "where food_id=" + fcontent[0];
-                    //mSQLiteDatabase.execSQL(UPDATE_FOOD_TABLE);
-                    //Toast.makeText(context, "修改成功!!", Toast.LENGTH_SHORT).show();
+                    mSQLiteDatabase.execSQL(UPDATE_FOOD_TABLE);
+                    Toast.makeText(context, "修改成功!!", Toast.LENGTH_SHORT).show();
 
-                    rcontent= UPDATE_FOOD_TABLE;     //相當於return String.
+                    //rcontent= UPDATE_FOOD_TABLE;     //相當於return String.
                     dismiss();
                 }
             }
@@ -372,7 +382,7 @@ public class CustomDialog extends Dialog {
         gv_specie.setOnItemClickListener(new AdapterView.OnItemClickListener() {    //選擇後設定rcontent=s_id, 關閉alert.
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                rcontent= String.valueOf(position);
+                rcontent= String.valueOf(position); //回傳此item的position.
                 dismiss();
             }
         });
@@ -387,16 +397,16 @@ public class CustomDialog extends Dialog {
         final View alertView = inflater.inflate(R.layout.alertdialog_delete, null);    //layout可換!
 
         TextView tv_content= alertView.findViewById(R.id.tv_content);
-        String content= "真的要刪除這"+fi.getfQuantity() + fi.getfUnit() + fi.getfName() +"？";
-        tv_content.setText(content);
+        tv_content.setText("真的要刪除這"+fi.getfQuantity() + fi.getfUnit() + fi.getfName() +"？");
 
         alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
             @Override
             public void onClick(View v) {
                 String DELETE_FOOD_TABLE= "DELETE FROM food WHERE food_id=" +fi.getfId();
-                //mSQLiteDatabase.execSQL(DELETE_FOOD_TABLE);
+                mSQLiteDatabase.execSQL(DELETE_FOOD_TABLE);
+                Toast.makeText(context, "刪除成功!!", Toast.LENGTH_SHORT).show();
 
-                rcontent= DELETE_FOOD_TABLE;
+                //rcontent= DELETE_FOOD_TABLE;
                 dismiss();
             }
         });
@@ -425,7 +435,7 @@ public class CustomDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 final CustomDialog fSpecie= new CustomDialog(context);
-                fSpecie.buildSselect(l_specie);  // TODO: 2018/9/3 疑問, buildSselect()使用算高耦合度? 是否應該在alert中進行DB查詢?
+                fSpecie.buildSselect(l_specie);
                 fSpecie.show();
                 fSpecie.setOnDismissListener(new OnDismissListener() {
                     @Override
@@ -480,8 +490,8 @@ public class CustomDialog extends Dialog {
         });
 
         //日期按鈕
-        final Button bt_fstoragetime= alertView.findViewById(R.id.bt_fstoragetime);
-        bt_fstoragetime.setOnClickListener(new View.OnClickListener() {
+        final Button bt_fstoragetime1= alertView.findViewById(R.id.bt_fstoragetime1);
+        bt_fstoragetime1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar= Calendar.getInstance(); //取得一個日曆實體.
@@ -491,7 +501,7 @@ public class CustomDialog extends Dialog {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {  //month要+1.
                         String sdate= DateFunction.stringFormat(year, month+1, day);
-                        bt_fstoragetime.setText(sdate);
+                        bt_fstoragetime1.setText(sdate);
                         Toast.makeText(context, sdate, Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -523,7 +533,7 @@ public class CustomDialog extends Dialog {
                 fcontent[0]= ib_specie.getTag().toString();
                 fcontent[1]= et_fname.getText().toString();
                 fcontent[2]= fposition;
-                fcontent[3]= bt_fstoragetime.getText().toString();
+                fcontent[3]= bt_fstoragetime1.getText().toString();
 
                 //取得填寫的內容
                 String[] column=new String[4];
@@ -633,10 +643,10 @@ public class CustomDialog extends Dialog {
                 }else {
                     String INSERT_SPECIE_TABLE = "INSERT INTO specie (specie_name, specie_life) " +   //, specie_image
                             "VALUES('"+ scontent[0] +"', '"+ scontent[1] +"')";     //, '"+ scontent[2] +"'
-                    //mSQLiteDatabase.execSQL(INSERT_FOOD_TABLE);
-                    //Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
+                    mSQLiteDatabase.execSQL(INSERT_SPECIE_TABLE);
+                    Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
 
-                    rcontent= INSERT_SPECIE_TABLE;     //相當於return String.
+                    //rcontent= INSERT_SPECIE_TABLE;     //相當於return String.
                     dismiss();
                 }
             }
@@ -680,15 +690,17 @@ public class CustomDialog extends Dialog {
                         isNull= true;
                 }   //若使用for each, 暫存each的對象為空時, 會造成錯誤.
 
-                if(isNull) {  //若有欄位未填寫.
+                if(si.getsName().equals("未知類")){
+                    Toast.makeText(context, si.getsName() +" 為預設種類，無法刪除及修改。", Toast.LENGTH_SHORT).show();
+                } else if(isNull) {  //若有欄位未填寫.
                     Toast.makeText(context, "有欄位空著!!", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     String UPDATE_SPECIE_TABLE= "UPDATE specie SET " +
                             "specie_name='"+ scontent[1] +"', specie_life='"+ scontent[2] +"' " +   //, specie_image="+ scontent[3] +
                             "where specie_id=" + scontent[0];
-                    //mSQLiteDatabase.execSQL(INSERT_FOOD_TABLE);
-                    //Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
-                    rcontent= UPDATE_SPECIE_TABLE;     //相當於return String.
+                    mSQLiteDatabase.execSQL(UPDATE_SPECIE_TABLE);
+                    Toast.makeText(context, "修改成功!!", Toast.LENGTH_SHORT).show();
+                    //rcontent= UPDATE_SPECIE_TABLE;     //相當於return String.
                     dismiss();
                 }
             }
@@ -705,10 +717,8 @@ public class CustomDialog extends Dialog {
                 sDelete.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if (sDelete.getReturn().equals("")) {
-                            Toast.makeText(context, "刪除失敗!?", Toast.LENGTH_SHORT).show();
+                        if (sDelete.getReturn().equals("")) {   //若取消則無動作, 成功就關閉alert.
                         } else {
-                            rcontent = sDelete.getReturn();
                             dismiss();
                         }
                     }
@@ -726,29 +736,59 @@ public class CustomDialog extends Dialog {
         final View alertView = inflater.inflate(R.layout.alertdialog_delete, null);    //layout可換!
 
         TextView tv_content = alertView.findViewById(R.id.tv_content);
-        String content = "真的要刪除 " + si.getsName() + " ？";
-        tv_content.setText(content);
+        //判斷是否為預設種類(未知類)
+        if(si.getsName().equals("未知類")) {
+            Button bt_cancel= alertView.findViewById(R.id.bt_cancel);
+            bt_cancel.setVisibility(View.GONE); //沒有取消按鈕.
 
-        alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
-            @Override
-            public void onClick(View v) {
-                String DELETE_SPECIE_TABLE = "DELETE FROM specie WHERE specie_id=" + si.getsId();
-                //mSQLiteDatabase.execSQL(DELETE_FOOD_TABLE);
-                rcontent = DELETE_SPECIE_TABLE;
-                dismiss();
-                // TODO: 2018/9/5 若刪除 原用此種類者改為????? 內建"?"種類?
-            }
-        });
+            tv_content.setText(si.getsName() + " 為預設種類，無法刪除及修改。");
 
-        alertView.findViewById(R.id.bt_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancel();
-            }
-        });
+            alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+        } else {
+            String content = "真的要刪除 " + si.getsName() + " ？\n原使用此種類者，在種類被刪除後將被改為未知類。";
+            tv_content.setText(content);
+
+            alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
+                @Override
+                public void onClick(View v) {
+                    //查詢未知類ID
+                    Cursor c;
+                    String SELECT= "SELECT * FROM specie WHERE specie_name= '未知類' ";
+                    c= mSQLiteDatabase.rawQuery(SELECT, null);
+                    c.moveToFirst();
+
+                    String UPDATE_FOOD_TABLE= "UPDATE food SET " +
+                            "food_specie='"+ c.getString(0) + //設定種類id=未知類id.
+                            "' WHERE food_specie= " + si.getsId();   //當種類id=當前種類.
+
+                    Log.d("TAG", "UPDATE_FOOD_TABLE= "+UPDATE_FOOD_TABLE);
+                    mSQLiteDatabase.execSQL(UPDATE_FOOD_TABLE);
+                    c.close();
+
+                    String DELETE_SPECIE_TABLE = "DELETE FROM specie WHERE specie_id=" + si.getsId();
+                    mSQLiteDatabase.execSQL(DELETE_SPECIE_TABLE);
+                    rcontent= "success!";
+
+                    //rcontent = DELETE_SPECIE_TABLE;
+                    dismiss();
+                }
+            });
+
+            alertView.findViewById(R.id.bt_cancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cancel();
+                }
+            });
+        }
 
         setContentView(alertView);
-        setAlertWindow(0.6, 0.7, true);
+        setAlertWindow(0.7, 0.8, true);
     }
 
 
