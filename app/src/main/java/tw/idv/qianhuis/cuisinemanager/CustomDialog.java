@@ -91,8 +91,7 @@ public class CustomDialog extends Dialog {
                             tv_showsname.setText(si.getsName());
                             tv_showslife.setText(si.getsLife());
                             ib_specie.setTag(si.getsId());  //用Tag紀錄ID.
-                            // ib_specie.setImageResource(R.drawable.圖檔名稱不含副檔名)
-                            //ib_specie.setImageResource();    //設置圖片.
+                            ib_specie.setImageResource(Integer.valueOf(si.getImgId()));
                         }
                     }
                 });
@@ -257,8 +256,7 @@ public class CustomDialog extends Dialog {
                             tv_showsname.setText(si.getsName());
                             tv_showslife.setText(si.getsLife());
                             ib_specie.setTag(si.getsId());  //用Tag紀錄ID.
-                            // ib_specie.setImageResource(R.drawable.圖檔名稱不含副檔名)
-                            //ib_specie.setImageResource();    //設置圖片.
+                            ib_specie.setImageResource(Integer.valueOf(si.getImgId()));
                         }
                     }
                 });
@@ -373,8 +371,8 @@ public class CustomDialog extends Dialog {
         GridView gv_specie= alertView.findViewById(R.id.gv_specie);
         SimpleAdapter adapter= new SimpleAdapter(context,
                 l_specie, R.layout.gridview_specie,
-                new String[]{"specie_name", "specie_life"},
-                new int[]{R.id.tv_showsname, R.id.tv_showslife}
+                new String[]{"specie_imgid", "specie_name", "specie_life"},
+                new int[]{R.id.iv_simage, R.id.tv_showsname, R.id.tv_showslife}
                 );
         gv_specie.setAdapter(adapter);
 
@@ -452,8 +450,7 @@ public class CustomDialog extends Dialog {
                             tv_showsname.setText(si.getsName());
                             tv_showslife.setText(si.getsLife());
                             ib_specie.setTag(si.getsId());  //用Tag紀錄ID.
-                            // ib_specie.setImageResource(R.drawable.圖檔名稱不含副檔名)
-                            //ib_specie.setImageResource();    //設置圖片.
+                            ib_specie.setImageResource(Integer.valueOf(si.getImgId()));
                         }
                     }
                 });
@@ -592,8 +589,8 @@ public class CustomDialog extends Dialog {
         GridView gv_specie= alertView.findViewById(R.id.gv_specie);
         SimpleAdapter adapter= new SimpleAdapter(context,
                 l_specie, R.layout.gridview_specie,
-                new String[]{"specie_name", "specie_life"},
-                new int[]{R.id.tv_showsname, R.id.tv_showslife}
+                new String[]{"specie_imgid", "specie_name", "specie_life"},
+                new int[]{R.id.iv_simage, R.id.tv_showsname, R.id.tv_showslife}
         );
         gv_specie.setAdapter(adapter);
 
@@ -611,11 +608,30 @@ public class CustomDialog extends Dialog {
     }
 
     //Specie Add
-    public void buildSInput() {     //(修改傳入si)填寫完回傳sqlcode.
+    public void buildSInput(final ArrayList<HashMap<String, Object>> l_simage) {     //(修改傳入si)填寫完回傳sqlcode.
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView= inflater.inflate(R.layout.alertdialog_sinput, null);    //layout可換!
 
-        //gridview
+        //gridview選擇圖片
+        //讀DBsimageTable(在main)放入list(傳給alert), 放入adapter顯示gridview.
+        final GridView gv_simage= alertView.findViewById(R.id.gv_simage);
+        gv_simage.setTag("");
+        SimpleAdapter adapter= new SimpleAdapter(context,
+                l_simage, R.layout.gridview_simage,
+                new String[]{"simage_id"},
+                new int[]{R.id.iv_simage}
+        );
+        gv_simage.setAdapter(adapter);
+
+        //gridviewitem選擇事件
+        gv_simage.setOnItemClickListener(new AdapterView.OnItemClickListener() {    //選擇後設定rcontent=s_id, 關閉alert.
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                gv_simage.getAdapter().getView(position, view, parent).setSelected(true);
+                HashMap<String,Object> selectItem= new HashMap<>();
+                gv_simage.setTag((String)l_simage.get(position).get("simage_name"));
+            }
+        });
 
         alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
             @Override
@@ -623,13 +639,12 @@ public class CustomDialog extends Dialog {
                 //連接layoutXML
                 EditText et_sname= alertView.findViewById(R.id.et_sname);
                 EditText et_slife= alertView.findViewById(R.id.et_slife);
-                //圖片!!!
 
                 //取得填寫的內容
-                String[] scontent=new String[2];
+                String[] scontent=new String[3];
                 scontent[0]= et_sname.getText().toString();
                 scontent[1]= et_slife.getText().toString();
-                //scontent[2]= .getResources().toString();
+                scontent[2]= rcontent;//gv_simage.getTag().toString();
 
                 //檢查是否有欄位為空
                 boolean isNull= false;
@@ -641,8 +656,8 @@ public class CustomDialog extends Dialog {
                 if(isNull) {  //若有欄位未填寫.
                     Toast.makeText(context, "有欄位空著!!", Toast.LENGTH_SHORT).show();
                 }else {
-                    String INSERT_SPECIE_TABLE = "INSERT INTO specie (specie_name, specie_life) " +   //, specie_image
-                            "VALUES('"+ scontent[0] +"', '"+ scontent[1] +"')";     //, '"+ scontent[2] +"'
+                    String INSERT_SPECIE_TABLE = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                            "VALUES('"+ scontent[0] +"', '"+ scontent[1] +"', '"+ scontent[2] +"')";
                     mSQLiteDatabase.execSQL(INSERT_SPECIE_TABLE);
                     Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
 
@@ -657,7 +672,7 @@ public class CustomDialog extends Dialog {
     }
 
     //Specie Revise
-    public void buildSInput(final SpecieItem si) {     //修改傳入si,填寫完回傳sqlcode.
+    public void buildSInput(final SpecieItem si, final ArrayList<HashMap<String, Object>> l_simage) {     //修改傳入si,填寫完回傳sqlcode.
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView= inflater.inflate(R.layout.alertdialog_sinput, null);    //layout可換!
 
@@ -666,7 +681,31 @@ public class CustomDialog extends Dialog {
 
         et_sname.setText(si.getsName());
         et_slife.setText(si.getsLife());
-        //gridview
+
+        //gridview選擇圖片
+        //讀DBsimageTable(在main)放入list(傳給alert), 放入adapter顯示gridview.
+        final GridView gv_simage= alertView.findViewById(R.id.gv_simage);
+        gv_simage.setTag(si.getsImage());
+        Log.d("tag", "si.getsImage()= "+si.getsImage());
+        SimpleAdapter adapter= new SimpleAdapter(context,
+                l_simage, R.layout.gridview_simage,
+                new String[]{"simage_id"},
+                new int[]{R.id.iv_simage}
+        );
+        gv_simage.setAdapter(adapter);
+
+        //gridviewitem選擇事件
+        gv_simage.setOnItemClickListener(new AdapterView.OnItemClickListener() {    //選擇後設定rcontent=s_id, 關閉alert.
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                gv_simage.getAdapter().getView(position, view, parent).setSelected(true);
+                HashMap<String,Object> selectItem= new HashMap<>();
+                gv_simage.setTag((String)l_simage.get(position).get("simage_name"));
+            }
+        });
+
+        // TODO: 2018/10/15 待修正, 預設點擊項目, 如何選擇指定圖片(如何得知指定圖片在gv的index)?
+        //gv_simage.getOnItemClickListener().onItemClick(null, null, l_simage.indexOf(si.getsImage()), 0);
 
         alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
             @Override
@@ -677,11 +716,11 @@ public class CustomDialog extends Dialog {
                 //圖片!!!
 
                 //取得填寫的內容
-                String[] scontent=new String[3];
+                String[] scontent=new String[4];
                 scontent[0]= si.getsId();
                 scontent[1]= et_sname.getText().toString();
                 scontent[2]= et_slife.getText().toString();
-                //scontent[3]= .getResources().toString();
+                scontent[3]= gv_simage.getTag().toString();
 
                 //檢查是否有欄位為空
                 boolean isNull= false;
@@ -696,7 +735,7 @@ public class CustomDialog extends Dialog {
                     Toast.makeText(context, "有欄位空著!!", Toast.LENGTH_SHORT).show();
                 } else {
                     String UPDATE_SPECIE_TABLE= "UPDATE specie SET " +
-                            "specie_name='"+ scontent[1] +"', specie_life='"+ scontent[2] +"' " +   //, specie_image="+ scontent[3] +
+                            "specie_name='"+ scontent[1] +"', specie_life='"+ scontent[2] +"' , specie_image='"+ scontent[3] +"' " +
                             "where specie_id=" + scontent[0];
                     mSQLiteDatabase.execSQL(UPDATE_SPECIE_TABLE);
                     Toast.makeText(context, "修改成功!!", Toast.LENGTH_SHORT).show();
@@ -766,7 +805,6 @@ public class CustomDialog extends Dialog {
                             "food_specie='"+ c.getString(0) + //設定種類id=未知類id.
                             "' WHERE food_specie= " + si.getsId();   //當種類id=當前種類.
 
-                    Log.d("TAG", "UPDATE_FOOD_TABLE= "+UPDATE_FOOD_TABLE);
                     mSQLiteDatabase.execSQL(UPDATE_FOOD_TABLE);
                     c.close();
 

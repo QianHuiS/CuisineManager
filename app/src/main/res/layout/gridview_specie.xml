@@ -5,6 +5,14 @@
     android:layout_height="80dp"
     style="@style/item_speciegv">
 
+    <ImageView
+        android:id="@+id/iv_simage"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center|top"
+        android:layout_margin="15dp"
+        app:srcCompat="@drawable/specie_unknown" />
+
     <TextView
         android:id="@+id/tv_showsname"
         android:layout_width="match_parent"
@@ -14,20 +22,6 @@
         android:hint="什毛類"
         android:padding="2dp"
         android:textSize="12sp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:gravity="center"
-        android:text="菜"
-        android:textSize="14sp" />
-
-    <ImageView
-        android:id="@+id/iv_simage"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_margin="5dp"
-        app:srcCompat="@drawable/story_movie" />
 
     <TextView
         android:id="@+id/tv_showslife"

@@ -98,7 +98,6 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_marginTop="15dp"
-            android:horizontalSpacing="3dp"
             android:numColumns="4"
             android:verticalSpacing="3dp">
 

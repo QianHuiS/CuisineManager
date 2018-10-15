@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView iv_nodata;
     GridView gv_food;
-    ArrayList<HashMap<String, Object>> l_food, l_specie;
+    ArrayList<HashMap<String, Object>> l_food, l_specie, l_simage;
 
     Button bt_select, bt_revise, bt_delete;
 
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         String CREATE_SPECIE_TABLE = "CREATE TABLE IF NOT EXISTS " +  //建立表單(若表單不存在!!). 建錯移除app.
                 "specie (" +
                 "specie_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "specie_name TEXT, specie_life INTEGER)";
+                "specie_name TEXT, specie_life INTEGER, specie_image TEXT)";
         mSQLiteDatabase.execSQL(CREATE_SPECIE_TABLE);     //執行SQL指令的字串.
 
         //連結XML
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         gv_food= findViewById(R.id.gv_food);
         l_food= new ArrayList<>();
         l_specie= new ArrayList<>();
+        l_simage= new ArrayList<>();
 
         //bt_側欄 bt_expired
 
@@ -115,12 +116,43 @@ public class MainActivity extends AppCompatActivity {
         tv_expirationdate= findViewById(R.id.tv_expirationdate);
         tv_foodlife= findViewById(R.id.tv_foodlife);
 
+        simageList();
+
         Cursor c;
         //若種類table為空, 新增預設種類"未知類".
         c = mSQLiteDatabase.rawQuery("SELECT * FROM specie WHERE 1", null);
         if(c.getCount()==0) {
-            String INSERT_S = "INSERT INTO specie (specie_name, specie_life) " +
-                    "VALUES('未知類', '0')";
+            String INSERT_S;
+            INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                    "VALUES('未知類', '0', 'specie_unknown')";
+            mSQLiteDatabase.execSQL(INSERT_S);
+
+            INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                    "VALUES('五穀根莖', '0', 'specie_cereal')";
+            mSQLiteDatabase.execSQL(INSERT_S);
+
+            INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                    "VALUES('蛋&豆', '0', 'specie_egg')";
+            mSQLiteDatabase.execSQL(INSERT_S);
+
+            INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                    "VALUES('海產', '0', 'specie_fish')";
+            mSQLiteDatabase.execSQL(INSERT_S);
+
+            INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                    "VALUES('肉', '0', 'specie_meat')";
+            mSQLiteDatabase.execSQL(INSERT_S);
+
+            INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                    "VALUES('蔬菜', '0', 'specie_vagetable')";
+            mSQLiteDatabase.execSQL(INSERT_S);
+
+            INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                    "VALUES('水果', '0', 'specie_fruit')";
+            mSQLiteDatabase.execSQL(INSERT_S);
+
+            INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
+                    "VALUES('奶&油脂', '0', 'specie_milk')";
             mSQLiteDatabase.execSQL(INSERT_S);
         }
         c.close();
@@ -133,24 +165,11 @@ public class MainActivity extends AppCompatActivity {
         c.close();
 
         if(num==0) {
-            for(int i=1; i<4; i++) {
-                String INSERT_S = "INSERT INTO specie (specie_name, specie_life) " +
-                        "VALUES('種類" + (i) + "', '" + (i+3) + "')";
-                mSQLiteDatabase.execSQL(INSERT_S);
-            }
             c=mSQLiteDatabase.rawQuery("SELECT * FROM specie WHERE 1 ", null);
             c.moveToFirst();
             c.moveToNext();
 
-            for(int i=0; i<3; i++) {
-                String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
-                        "food_unit, food_position, food_storagetime) " +
-                        "VALUES('"+c.getString(0)+"', '高麗菜"+(i+1)+"', '1.5', " +
-                        "'顆', '保鮮室', '2018-10-10')";
-                mSQLiteDatabase.execSQL(INSERT_F);
-            }
-            c.moveToNext();
-            for(int i=0; i<3; i++) {
+            for(int i=0; i<2; i++) {
                 String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
                         "VALUES('"+c.getString(0)+"', '地瓜"+i+"', '2', " +
@@ -158,11 +177,19 @@ public class MainActivity extends AppCompatActivity {
                 mSQLiteDatabase.execSQL(INSERT_F);
             }
             c.moveToNext();
-            for(int i=0; i<3; i++) {
+            for(int i=0; i<2; i++) {
                 String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
-                        "VALUES('"+c.getString(0)+"', '檸檬愛玉"+i+"', '1', " +
-                        "'罐', '冷藏室', '2018-10-12')";
+                        "VALUES('"+c.getString(0)+"', '雞蛋"+i+"', '1.5', " +
+                        "'顆', '保鮮室', '2018-10-10')";
+                mSQLiteDatabase.execSQL(INSERT_F);
+            }
+            c.moveToNext();
+            for(int i=0; i<2; i++) {
+                String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
+                        "food_unit, food_position, food_storagetime) " +
+                        "VALUES('"+c.getString(0)+"', '海帶"+i+"', '1', " +
+                        "'包', '冷藏室', '2018-10-12')";
                 mSQLiteDatabase.execSQL(INSERT_F);
             }
             c.close();
@@ -329,8 +356,12 @@ public class MainActivity extends AppCompatActivity {
                 c2.moveToFirst();
 
                 SpecieItem si;
-                si = new SpecieItem(c2.getString(0),
-                            c2.getString(1), c2.getString(2));
+                si = new SpecieItem(c2.getString(0), c2.getString(1),
+                        c2.getString(2), c2.getString(3));
+                si.setImgId(String.valueOf(
+                        getResources().getIdentifier(
+                        si.getsImage(), "drawable", getPackageName())
+                ));
                 c2.close();
 
                 FoodItem fi= new FoodItem(c1.getString(0),
@@ -355,11 +386,10 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
-            // TODO: 2018/8/14 待修正, 食物種類圖樣顯示.   1
             SimpleAdapter adapter= new SimpleAdapter(MainActivity.this,
                     l_food, R.layout.gridview_fridge,
-                    new String[]{"food_specie", "food_name", "food_life"},
-                    new int[]{R.id.tv_showfspecie, R.id.tv_showfname, R.id.tv_showflife}
+                    new String[]{"specie_imgid", "food_name", "food_life"},
+                    new int[]{R.id.iv_showfspecie, R.id.tv_showfname, R.id.tv_showflife}
             );
             gv_food.setAdapter(adapter);
 
@@ -381,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
                     //顯示詳細資料
                     tv_sname.setText(fi.getsItem().getsName());
                     tv_slife.setText(fi.getsItem().getsLife());
-                    // ib_specie.setImageResource(R.drawable.圖檔名稱不含副檔名)
+                    iv_simage.setImageResource(Integer.valueOf(fi.getsItem().getImgId()));
                     tv_fname.setText(fi.getfName());
                     tv_fquantity.setText(fi.getfQuantity());
                     tv_funit.setText(fi.getfUnit());
@@ -540,7 +570,7 @@ public class MainActivity extends AppCompatActivity {
                         //判斷操作為新增或修改
                         if(specie.getReturn().equals("ADD")) {
                             final CustomDialog sAdd= new CustomDialog(MainActivity.this);
-                            sAdd.buildSInput();
+                            sAdd.buildSInput(l_simage);
                             sAdd.show();
                             sAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
@@ -566,7 +596,7 @@ public class MainActivity extends AppCompatActivity {
                             ));
 
                             final CustomDialog sRevise= new CustomDialog(MainActivity.this);
-                            sRevise.buildSInput(si);
+                            sRevise.buildSInput(si, l_simage);
                             sRevise.show();
                             sRevise.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
@@ -613,14 +643,41 @@ public class MainActivity extends AppCompatActivity {
         c.moveToFirst();
 
         while(!c.isAfterLast()){
-            SpecieItem si= new SpecieItem(c.getString(0),
-                    c.getString(1), c.getString(2)
+            SpecieItem si= new SpecieItem(c.getString(0), c.getString(1),
+                    c.getString(2), c.getString(3)
             );
+            si.setImgId(String.valueOf(
+                    getResources().getIdentifier(si.getsImage(), "drawable", getPackageName())
+            ));
 
             l_specie.add(si.getsHashMap());
             c.moveToNext();
         }
         c.close();
+    }
+
+    public void simageList() {
+        l_simage.clear();
+
+        String[] imgName= new String[] {
+                "specie_unknown", "specie_cereal", "specie_egg",
+                "specie_fish", "specie_meat", "specie_vagetable",
+                "specie_fruit", "specie_milk", "specie_dessert",
+                "specie_drink", "specie_delicatessen"
+        };
+
+        String[] imgId= new String[imgName.length];
+        for(int i=0; i<imgName.length; i++)
+            imgId[i]= String.valueOf(
+                    getResources().getIdentifier(imgName[i], "drawable", getPackageName())
+            );
+
+        for(int i=0; i<imgName.length; i++) {
+            HashMap<String, Object> imgHashMap= new HashMap<>();
+            imgHashMap.put("simage_name", imgName[i]);
+            imgHashMap.put("simage_id", imgId[i]);
+            l_simage.add(imgHashMap);
+        }
     }
 
 }

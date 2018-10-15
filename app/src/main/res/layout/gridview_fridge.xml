@@ -7,19 +7,11 @@
 
     <ImageView
         android:id="@+id/iv_showfspecie"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_margin="5dp"
-        app:srcCompat="@drawable/story_movie" />
-
-    <TextView
-        android:id="@+id/tv_showfspecie"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_margin="5dp"
-        android:gravity="center"
-        android:text="0"
-        android:textSize="20sp" />
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center|top"
+        android:layout_margin="15dp"
+        app:srcCompat="@drawable/specie_unknown" />
 
     <TextView
         android:id="@+id/tv_showflife"

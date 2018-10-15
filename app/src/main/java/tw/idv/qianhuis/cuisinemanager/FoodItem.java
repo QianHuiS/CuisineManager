@@ -50,9 +50,11 @@ public class FoodItem {
         sItem= new SpecieItem(
                 (String)selectItem.get("specie_id"),
                 (String)selectItem.get("specie_name"),
-                (String)selectItem.get("specie_life")
+                (String)selectItem.get("specie_life"),
+                (String)selectItem.get("specie_image")
         );
 
+        sItem.setImgId((String)selectItem.get("specie_imgid"));
         setfExpirationdate();
         setfLife();
     }
@@ -147,6 +149,8 @@ public class FoodItem {
         fHashMap.put("specie_id", sItem.getsId());
         fHashMap.put("specie_name", sItem.getsName());
         fHashMap.put("specie_life", sItem.getsLife());
+        fHashMap.put("specie_image", sItem.getsImage());
+        fHashMap.put("specie_imgid", sItem.getImgId());
 
         return fHashMap;
     }
