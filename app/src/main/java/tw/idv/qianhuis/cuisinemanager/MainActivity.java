@@ -62,8 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
         String DROP_FOOD_TABLE=  "DROP TABLE IF EXISTS food";
         String DROP_SPECIE_TABLE=  "DROP TABLE IF EXISTS specie";
+        String DROP_RECIPE_TABLE=  "DROP TABLE IF EXISTS recipe";
+        String DROP_TYPE_TABLE=  "DROP TABLE IF EXISTS type";
         mSQLiteDatabase.execSQL(DROP_FOOD_TABLE);
         mSQLiteDatabase.execSQL(DROP_SPECIE_TABLE);
+        mSQLiteDatabase.execSQL(DROP_RECIPE_TABLE);
+        mSQLiteDatabase.execSQL(DROP_TYPE_TABLE);
 
         String CREATE_FOOD_TABLE = "CREATE TABLE IF NOT EXISTS " +  //建立表單(若表單不存在!!). 建錯移除app.
                 "food (" +
@@ -78,6 +82,21 @@ public class MainActivity extends AppCompatActivity {
                 "specie_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "specie_name TEXT, specie_life INTEGER, specie_image TEXT)";
         mSQLiteDatabase.execSQL(CREATE_SPECIE_TABLE);     //執行SQL指令的字串.
+
+        String CREATE_RECIPE_TABLE = "CREATE TABLE IF NOT EXISTS " +  //建立表單(若表單不存在!!). 建錯移除app.
+                "recipe (" +
+                "recipe_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "recipe_phc INTEGER, recipe_type TEXT, " +
+                "recipe_name TEXT, recipe_image TEXT, " +
+                "recipe_portion INTEGER, recipe_food TEXT, " +
+                "recipe_remark TEXT, recipe_cookstep TEXT)";
+        mSQLiteDatabase.execSQL(CREATE_RECIPE_TABLE);     //執行SQL指令的字串.
+
+        String CREATE_TYPE_TABLE = "CREATE TABLE IF NOT EXISTS " +  //建立表單(若表單不存在!!). 建錯移除app.
+                "type (" +
+                "type_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "type_main TEXT, type_content INTEGER)";
+        mSQLiteDatabase.execSQL(CREATE_TYPE_TABLE);     //執行SQL指令的字串.
 
         //連結XML
         bt_next= findViewById(R.id.bt_next);
@@ -128,23 +147,23 @@ public class MainActivity extends AppCompatActivity {
             mSQLiteDatabase.execSQL(INSERT_S);
 
             INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
-                    "VALUES('五穀根莖', '0', 'specie_cereal')";
+                    "VALUES('五穀根莖', '7', 'specie_cereal')";
             mSQLiteDatabase.execSQL(INSERT_S);
 
             INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
-                    "VALUES('蛋&豆', '0', 'specie_egg')";
+                    "VALUES('蛋&豆', '6', 'specie_egg')";
             mSQLiteDatabase.execSQL(INSERT_S);
 
             INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
-                    "VALUES('海產', '0', 'specie_fish')";
+                    "VALUES('海產', '4', 'specie_fish')";
             mSQLiteDatabase.execSQL(INSERT_S);
 
             INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
-                    "VALUES('肉', '0', 'specie_meat')";
+                    "VALUES('肉', '3', 'specie_meat')";
             mSQLiteDatabase.execSQL(INSERT_S);
 
             INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
-                    "VALUES('蔬菜', '0', 'specie_vagetable')";
+                    "VALUES('蔬菜', '5', 'specie_vagetable')";
             mSQLiteDatabase.execSQL(INSERT_S);
 
             INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
@@ -152,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             mSQLiteDatabase.execSQL(INSERT_S);
 
             INSERT_S = "INSERT INTO specie (specie_name, specie_life, specie_image) " +
-                    "VALUES('奶&油脂', '0', 'specie_milk')";
+                    "VALUES('奶&油脂', '10', 'specie_milk')";
             mSQLiteDatabase.execSQL(INSERT_S);
         }
         c.close();
@@ -173,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
                         "VALUES('"+c.getString(0)+"', '地瓜"+i+"', '2', " +
-                        "'顆', '冷凍室', '2018-10-11')";
+                        "'顆', '冷凍室', '2018-11-21')";
                 mSQLiteDatabase.execSQL(INSERT_F);
             }
             c.moveToNext();
@@ -181,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
                         "VALUES('"+c.getString(0)+"', '雞蛋"+i+"', '1.5', " +
-                        "'顆', '保鮮室', '2018-10-10')";
+                        "'顆', '保鮮室', '2018-11-20')";
                 mSQLiteDatabase.execSQL(INSERT_F);
             }
             c.moveToNext();
@@ -189,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 String INSERT_F = "INSERT INTO food (food_specie, food_name, food_quantity, " +
                         "food_unit, food_position, food_storagetime) " +
                         "VALUES('"+c.getString(0)+"', '海帶"+i+"', '1', " +
-                        "'包', '冷藏室', '2018-10-12')";
+                        "'包', '冷藏室', '2018-11-22')";
                 mSQLiteDatabase.execSQL(INSERT_F);
             }
             c.close();

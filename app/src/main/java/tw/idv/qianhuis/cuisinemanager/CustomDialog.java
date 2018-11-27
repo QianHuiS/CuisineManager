@@ -216,6 +216,7 @@ public class CustomDialog extends Dialog {
         tv_showsname.setText(fi.getsItem().getsName());    //取得點選的種類ID, 取出詳細資料顯示在button.
         tv_showslife.setText(fi.getsItem().getsLife());
         ib_specie.setTag(fi.getfSpecie());
+        ib_specie.setImageResource(Integer.valueOf(fi.getsItem().getImgId()));
         et_fname.setText(fi.getfName());
         et_fquantity.setText(fi.getfQuantity());
         et_funit.setText(fi.getfUnit());
@@ -644,7 +645,7 @@ public class CustomDialog extends Dialog {
                 String[] scontent=new String[3];
                 scontent[0]= et_sname.getText().toString();
                 scontent[1]= et_slife.getText().toString();
-                scontent[2]= rcontent;//gv_simage.getTag().toString();
+                scontent[2]= gv_simage.getTag().toString();
 
                 //檢查是否有欄位為空
                 boolean isNull= false;
@@ -704,7 +705,7 @@ public class CustomDialog extends Dialog {
             }
         });
 
-        // TODO: 2018/10/15 待修正, 預設點擊項目, 如何選擇指定圖片(如何得知指定圖片在gv的index)?
+        // 修改TODO: 2018/10/15 待修正, 預設點擊項目, 如何選擇指定圖片(如何得知指定圖片在gv的index)?
         //gv_simage.getOnItemClickListener().onItemClick(null, null, l_simage.indexOf(si.getsImage()), 0);
 
         alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
