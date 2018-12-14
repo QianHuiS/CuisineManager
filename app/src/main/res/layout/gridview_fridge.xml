@@ -31,6 +31,9 @@
         android:gravity="center"
         android:padding="2dp"
         android:text="我是食物"
+        android:singleLine="true"
+        android:maxEms="4"
+        android:maxLines="1"
         android:textSize="12sp" />
 
 </FrameLayout>

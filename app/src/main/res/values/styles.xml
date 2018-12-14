@@ -51,12 +51,16 @@
         <item name="android:background">@drawable/selector_fsimgitem</item>
     </style>
 
-    <style name="bt_foodgv1">
-        <item name="android:layout_width">60dp</item>
-        <item name="android:layout_height">40dp</item>
-        <item name="android:background">@drawable/selector_fclickbt_foodgv1</item>  <!--待刪-->
-        <item name="android:textSize">14sp</item>
+    <style name="item_recipelv">
+        <item name="android:background">@drawable/selector_rritem</item>
     </style>
+
+    <style name="bt_foodgv1">
+    <item name="android:layout_width">60dp</item>
+    <item name="android:layout_height">40dp</item>
+    <item name="android:background">@drawable/selector_fclickbt_foodgv1</item>  <!--待刪-->
+    <item name="android:textSize">14sp</item>
+</style>
 
     <style name="bt_foodgv2">
         <item name="android:layout_width">60dp</item>
@@ -70,6 +74,34 @@
         <item name="android:layout_height">40dp</item>
         <item name="android:background">@drawable/selector_fclickbt_foodgv3</item>  <!--待刪-->
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="bt_recipelv1">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/selector_rclickbt_recipelv1</item>  <!--待刪-->
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="bt_recipelv2">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/selector_rclickbt_recipelv2</item>  <!--待刪-->
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="bt_recipelv3">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/selector_rclickbt_recipelv3</item>  <!--待刪-->
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="bt_cookstep">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:background">@drawable/selector_rclickbt_cookstep</item>  <!--待刪-->
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="tv_headline">

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tw.idv.qianhuis.cuisinemanager.MainActivity"
-    android:background="@drawable/fridge_bg">
+    android:background="@drawable/fridge_bg"
+    tools:context="tw.idv.qianhuis.cuisinemanager.MainActivity">
 
 
     <LinearLayout
@@ -125,12 +125,13 @@
             android:layout_weight="4"
             android:gravity="center"
             android:orientation="horizontal"
+            android:paddingTop="20dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -167,7 +168,13 @@
                     <TextView
                         android:id="@+id/tv_fname"
                         style="@style/tv_title"
-                        android:hint="我是菜" />
+                        android:hint="我是菜"
+                        android:singleLine="false"
+                        android:maxEms="4"
+                        android:maxLines="2"
+                        android:scrollbars="vertical"	/>  <!--多行滾動, 需加上程式碼:
+                        tv_name.setMovementMethod(
+                        ScrollingMovementMethod.getInstance());-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -247,9 +254,9 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/fridge_line"
+                android:layout_marginBottom="15dp"
                 android:scaleType="fitXY"
-                android:layout_marginBottom="15dp"/>
+                app:srcCompat="@drawable/fridge_line" />
 
             <LinearLayout
                 android:layout_width="match_parent"

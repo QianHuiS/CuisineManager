@@ -163,7 +163,7 @@ public class FoodItem {
     }
 
     //計算剩餘天數
-    public void setfLife() {
+    private void setfLife() {
         fLife= DateFunction.dateCalculation(
                 fExpirationdate, DateFunction.getToday()
         );
