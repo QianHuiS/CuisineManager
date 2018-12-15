@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/item_recipelv"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingRight="10dp"> <!--style="@style/item_recipelv"-->
 
     <TextView
         android:id="@+id/tv_showrname"
@@ -18,7 +17,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:text="我是食譜"
-        android:textSize="@drawable/selector_rritemsize" />
+        android:textSize="16sp" /> <!--"@drawable/selector_rritemsize"-->
 
     <TextView
         android:id="@+id/tv_showrphc"

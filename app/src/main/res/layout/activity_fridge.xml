@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fridge_bg"
-    tools:context="tw.idv.qianhuis.cuisinemanager.MainActivity">
+    tools:context="tw.idv.qianhuis.cuisinemanager.FridgeActivity">
 
 
     <LinearLayout

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fridge_bg"
-    tools:context="tw.idv.qianhuis.cuisinemanager.MainActivity">
+    tools:context="tw.idv.qianhuis.cuisinemanager.FridgeActivity">
 
 
     <LinearLayout
@@ -51,7 +51,8 @@
             android:orientation="horizontal"
             android:paddingLeft="30dp"
             android:paddingRight="15dp"
-            android:paddingTop="20dp">
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -124,8 +125,8 @@
 
                     <TextView
                         style="@style/tv_content"
-                        android:layout_weight="2"
-                        android:gravity="center"
+                        android:layout_weight="1.5"
+                        android:gravity="center|start"
                         android:text="人份"
                         android:textSize="12sp" />
 
@@ -151,7 +152,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.8"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:paddingBottom="20dp"
             android:paddingLeft="15dp"
@@ -185,14 +186,22 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:gravity="center|start"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="步驟 " />
+
+                <TextView
+                    android:id="@+id/tv_step"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="步驟" />
+                    android:hint="0" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -200,14 +209,14 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/bt_cookstept1"
+                        android:id="@+id/bt_steptp"
                         style="@style/bt_cookstep"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
                         android:text="←" />
 
                     <Button
-                        android:id="@+id/bt_cookstept2"
+                        android:id="@+id/bt_steptn"
                         style="@style/bt_cookstep"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
@@ -221,9 +230,15 @@
                 android:id="@+id/tv_rcookstep"
                 style="@style/tv_content"
                 android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:hint="會被改掉的步驟們..." />
+                android:hint="會被改掉的步驟們..."
+                android:scrollbars="vertical"
+                android:singleLine="false"
+                android:textSize="16sp" />  <!--多行滾動, 需加上程式碼:
+                    tv_name.setMovementMethod(
+                    ScrollingMovementMethod.getInstance());-->
 
         </LinearLayout>
 

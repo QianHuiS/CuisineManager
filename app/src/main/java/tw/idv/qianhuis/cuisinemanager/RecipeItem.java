@@ -1,5 +1,7 @@
 package tw.idv.qianhuis.cuisinemanager;
 
+import android.util.Log;
+
 import java.util.HashMap;
 
 public class RecipeItem {
@@ -15,10 +17,6 @@ public class RecipeItem {
     private String rRemark;
 
     private TypeItem tItem;
-
-    private String[][] foods;
-    private String[] types;
-    private String[][] steps;
 
     //public FoodItem(){};
 
@@ -39,9 +37,6 @@ public class RecipeItem {
 
         tItem = titem;
 
-        setFoods();
-        setTypetag();
-        setSteps();
     }
 
     //取得已有的HashMap內容物
@@ -63,9 +58,6 @@ public class RecipeItem {
                 (String)selectItem.get("type_tag")
         );
 
-        setFoods();
-        setTypetag();
-        setSteps();
     }
 
     //Getter&Setter
@@ -159,18 +151,6 @@ public class RecipeItem {
         this.tItem = tItem;
     }
 
-    public String[][] getFoods() {
-        return foods;
-    }
-
-    public String[] getTypes() {
-        return types;
-    }
-
-    public String[][] getSteps() {
-        return steps;
-    }
-
     //其他
     public HashMap<String, Object> getrHashMap() {      //僅允許內部設置.
         HashMap<String, Object> rHashMap= new HashMap<>();
@@ -193,7 +173,7 @@ public class RecipeItem {
     }
 
     //分割rfood
-    private void setFoods() {
+    private String[][] getFoods() {
         //rFood範例= "豆包 4 個 _老薑 3 片 _香菜 0 適量 "
         int separate= 0;    //查詢字串index, 有幾次分割(分割完幾個字串).
         int num= 0;
@@ -203,7 +183,7 @@ public class RecipeItem {
             separate++;
         }
 
-        foods= new String[separate+1][3];   //[分割次數+1個食材][名稱數量單位].
+        String[][] foods= new String[separate+1][3];   //[分割次數+1個食材][名稱數量單位].
         String tmp1= rFood;
         String tmp2= "";
         for(int i=0; i<foods.length; i++) {     //先分割各食材, 再分割名稱數量單位.
@@ -213,36 +193,77 @@ public class RecipeItem {
             } else {
                 tmp2= tmp1;
             }
+
             for(int j=0; j<foods[i].length; j--){
                 foods[i][j]= tmp2.substring(0, tmp2.indexOf(" ")-1);    //取得開始到第一個" "前的字串.
                 if(j==foods[i].length-1) {}     //若是最後一個, 啥都不做.
                 else    tmp2= tmp2.substring(tmp2.indexOf(" ")+1); //tmp2= 第一個" "後, 到結尾的字串.
             }
         }
+
+        return foods;
     }
 
     // TODO: 2018/12/12 待優化, 食材顯示改為可點擊的自定義view.
     public String showFoods() {
-        String shows= "";
-        for(int i=0; i<foods.length; i++) {
-            for(int j=0; j<foods[i].length; j++) {
-                shows= (i+1)+". " +shows.concat(foods[i][j] +"  ");   //在shows後面接內容.
-            }
-            shows= shows.trim().concat("\n");
+        String showf= "";
+        showf= rFood;
+        showf= showf.replace(" _", "\n").trim().replace("0", "");
+
+        /*
+        //有編號
+        String tmp= rFood;
+        int i= 1;
+        while(tmp.contains("_")) {    //字串是否包含"_".
+            if(tmp.contains("0"))   tmp.replace("0", "");   //若有數量0則省略.
+            showf= showf.concat(i +". " +tmp.substring(0, tmp.indexOf("_")-1));     //取得開始到第一個"_"前的子字串.
+            showf= showf.trim().concat("\n");   //去除首尾空白, 接換行.
+            i++;
+            tmp= tmp.substring(tmp.indexOf("_")+1);   //tmp1= 第一個"_"後, 到結尾的字串.
         }
-        return shows;
+        //剩最後一項食材(tmp沒有"_")
+        showf= showf.concat(i +". " +tmp);
+        showf= showf.trim();
+        */
+
+        return showf;
     }
 
     //分割rtype
-    private void setTypetag() {
+    private String[] getTypetag() {
         int separate= 0;
-        types = new String[10];
+        String[] types = new String[separate];
+        return types;
     }
 
     //分割rcookstept
-    private void setSteps() {
+    private String[][] getSteps() {
         int separate= 0;
-        steps= new String[separate][];
+        String[][]steps= new String[separate][];
+        return steps;
     }
 
+    public String showSteps(int step) {
+        String shows= "";
+
+        //有編號
+        String tmp= rCookstep;
+        int i= 1;
+        while(tmp.contains("_")) {    //字串是否包含"_".
+            if(i==step) {
+                shows = shows.concat(tmp.substring(0, tmp.indexOf("_"))).trim();     //取得開始到第一個"_"前的子字串, 去除首尾空白.
+                //Log.d("結果", "i= "+i+"   step= "+step+"   shows= "+shows);
+            }
+            i++;
+            tmp= tmp.substring(tmp.indexOf("_")+2);   //tmp1= 第一個"_"後, 到結尾的字串.
+            //Log.d("i++", "i= "+i+"   tmp= "+tmp);
+        }
+        //剩最後一項食材(tmp沒有"_")
+        if(i==step) {
+            shows= shows.concat(tmp).trim();
+            //Log.d("結果", "i= "+i+"   step= "+step+"   shows= "+shows);
+        }
+
+        return shows;
+    }
 }

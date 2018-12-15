@@ -630,7 +630,7 @@ public class CustomDialog extends Dialog {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 gv_simage.getAdapter().getView(position, view, parent).setSelected(true);
                 HashMap<String,Object> selectItem= new HashMap<>();
-                gv_simage.setTag((String)l_simage.get(position).get("simage_name"));
+                gv_simage.setTag(l_simage.get(position).get("simage_name"));
             }
         });
 
@@ -701,7 +701,7 @@ public class CustomDialog extends Dialog {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 gv_simage.getAdapter().getView(position, view, parent).setSelected(true);
                 HashMap<String,Object> selectItem= new HashMap<>();
-                gv_simage.setTag((String)l_simage.get(position).get("simage_name"));
+                gv_simage.setTag(l_simage.get(position).get("simage_name"));
             }
         });
 
