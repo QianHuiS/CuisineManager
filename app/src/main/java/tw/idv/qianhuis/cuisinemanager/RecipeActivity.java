@@ -1,5 +1,6 @@
 package tw.idv.qianhuis.cuisinemanager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,7 +34,7 @@ public class RecipeActivity extends AppCompatActivity {
     LinearLayout ll_next1, ll_next2;
 
     Button bt_add, bt_search, bt_tsetting, bt_suggest;
-    Button bt_typemain, bt_typecontent;
+    Button bt_typemain, bt_typetag;
     final String ALL = "1";
 
     ImageView iv_nodata;
@@ -45,7 +46,8 @@ public class RecipeActivity extends AppCompatActivity {
 
     ImageView iv_rimage;
     TextView tv_rportion, tv_rfood;
-    TextView tv_rtype;
+    //TextView tv_rtype;
+    LinearLayout ll_rtype;
 
     Button bt_steptp, bt_steptn;
     TextView tv_step, tv_rcookstep;
@@ -123,7 +125,7 @@ public class RecipeActivity extends AppCompatActivity {
         bt_tsetting= findViewById(R.id.bt_tsetting);
 
         bt_typemain= findViewById(R.id.bt_typemain);
-        bt_typecontent= findViewById(R.id.bt_typecontent);
+        bt_typetag = findViewById(R.id.bt_typetag);
 
         iv_nodata= findViewById(R.id.iv_nodata);
         lv_recipe= findViewById(R.id.lv_recipe);
@@ -140,8 +142,8 @@ public class RecipeActivity extends AppCompatActivity {
         tv_rportion= findViewById(R.id.tv_rportion);
         tv_rfood= findViewById(R.id.tv_rfood);
         tv_rfood.setMovementMethod(ScrollingMovementMethod.getInstance());
-
-        tv_rtype= findViewById(R.id.tv_rtype);
+        //tv_rtype= findViewById(R.id.tv_rtype);
+        ll_rtype= findViewById(R.id.ll_rtype);
 
         bt_steptp = findViewById(R.id.bt_steptp);
         bt_steptn = findViewById(R.id.bt_steptn);
@@ -177,6 +179,62 @@ public class RecipeActivity extends AppCompatActivity {
             }
         });
 
+        bt_typemain.setOnClickListener(new View.OnClickListener() {     //大分類查詢
+            @Override
+            public void onClick(View v) {
+                if(!bt_typemain.isSelected()) {
+                    final RecipeDialog rd= new RecipeDialog(RecipeActivity.this);
+                    rd.buildTSelect();
+                    rd.show();
+                    rd.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            if(!rd.getReturn().equals("")) {
+                                bt_typemain.setSelected(true);
+                                bt_typemain.setText(rd.getReturn());
+                                bt_typetag.setEnabled(true);
+                                recipeList(ALL);    //查詢ALL, if(bt.isSelected()) foreach查詢 if(tag.getMaintype()==bt.getText().toString()) l.add;
+                                //Toast.makeText(RecipeActivity.this, "return= "+rd.getReturn(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    bt_typemain.setSelected(false);
+                    bt_typemain.setText("");
+                    bt_typetag.setSelected(false);
+                    bt_typetag.setEnabled(false);
+                    bt_typetag.setText("");
+                    recipeList(ALL);
+                }
+            }
+        });
+
+        bt_typetag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!bt_typetag.isSelected()) {
+                    final RecipeDialog rd= new RecipeDialog(RecipeActivity.this);
+                    rd.buildTSelect(bt_typemain.getText().toString());  //主類別下的子類別.
+                    rd.show();
+                    rd.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            if(!rd.getReturn().equals("")) {
+                                bt_typetag.setSelected(true);
+                                bt_typetag.setText(rd.getReturn());
+                                recipeList(ALL);    //查詢ALL, if(bt.isSelected()) foreach查詢 if(tag.getMaintype()==bt.getText().toString()) l.add;
+                                //Toast.makeText(RecipeActivity.this, "return= "+rd.getReturn(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    bt_typetag.setSelected(false);
+                    bt_typetag.setText("");
+                    recipeList(ALL);
+                }
+            }
+        });
+
     }
 
     // TODO: 2018/8/13 建立bar側欄, ????.
@@ -185,63 +243,71 @@ public class RecipeActivity extends AppCompatActivity {
     //顯示食譜listview
     public void recipeList(final String WHERE){ //把DB內容放入HashMap, 把HashMap放入ArrayList, 把ArrayList放入SimpleAdapter顯示.
         //取得recipeTable資料
+        typeList();
         l_recipe.clear();
         Cursor c1;
         c1= mSQLiteDatabase.rawQuery("SELECT * FROM recipe WHERE "+WHERE, null);
         c1.moveToFirst();
 
         //檢查是否有資料
-        if(c1.getCount()==0) {   //若無資料, 顯示找不到資料及圖片.
-            c1.close();
-
-            //禁用bt
-            bt_delete.setEnabled(false);
-            bt_revise.setEnabled(false);
-            bt_select.setEnabled(false);
-
-            iv_rimage.setImageDrawable(getResources().getDrawable(
-                    R.drawable.specie_delicatessen));
-
-            tv_rportion.setText("");
-            tv_rfood.setText("");
-            tv_rtype.setText("");
-            tv_rcookstep.setText("");
-
-            iv_nodata.setVisibility(View.VISIBLE);
-            Toast.makeText(RecipeActivity.this, "沒有資料!!", Toast.LENGTH_SHORT).show();
-        } else {    //若有資料, 將每筆資料取出.
+        if(c1.getCount()!=0) {    //若有資料, 將每筆資料取出.
             iv_nodata.setVisibility(View.GONE); //有資料則不顯示圖片.
 
-            while(!c1.isAfterLast()){
-                /*
-                //取出種類內容(同等外來鍵效果)
-                Cursor c2;  //透過recipe的typeID欄位, 查詢type資料並取出.
-                // TODO: 2018/12/13 typeIDs需被分割才能查詢及儲存成ti, 如何儲存多個ti???
-                String SELECT= "SELECT * FROM type WHERE type_id= " + (c1.getString(1));
-                //String SELECT= "SELECT * FROM type WHERE 1";    //未知類.
-                c2= mSQLiteDatabase.rawQuery(SELECT, null);
-                c2.moveToFirst();
-
-                TypeItem ti;
-                ti = new TypeItem(c2.getString(0), c2.getString(1),
-                        c2.getString(2));
-                c2.close();
-                */
-                TypeItem ti= new TypeItem("0000","測試用","測試");
-
-                RecipeItem ri= new RecipeItem(c1.getString(0),
+            while (!c1.isAfterLast()) {
+                RecipeItem ri = new RecipeItem(c1.getString(0),
                         c1.getString(1), c1.getString(2),
                         c1.getString(3), c1.getString(4),
                         c1.getString(5), c1.getString(6),
                         c1.getString(7), c1.getString(8),
-                        c1.getString(9), ti
+                        c1.getString(9), null
                 );
+                /*
+                //取出種類內容(同等外來鍵效果)
+                ArrayList<TypeItem> l_ti= new ArrayList<>();
+                Cursor c2;  //透過recipe的typeID欄位, 查詢type資料並取出.
+                for(int i = 1; !(ri.getTpyetag(i).equals("")); i++){
+                    String SELECT= "SELECT * FROM type WHERE type_id= " + ri.getTpyetag(i);
+                    c2= mSQLiteDatabase.rawQuery(SELECT, null);
+                    c2.moveToFirst();
 
-                l_recipe.add(ri.getrHashMap());
+                    TypeItem ti;
+                    ti = new TypeItem(c2.getString(0), c2.getString(1),
+                            c2.getString(2));
+                    l_ti.add(ti);
+                    c2.close();
+                }
+                ri.settItems(l_ti);
+                */
+
+                //分類查詢處理
+                if (bt_typemain.isSelected()) {
+                    ri.settItems(findtItemsById(ri));   //設定ti.
+
+                    //判斷主類別
+                    int isMaintype= 0;
+                    for (TypeItem ti : ri.gettItems())   //判斷所有tag是否包含主類別.
+                        if (ti.gettMain().equals(bt_typemain.getText().toString()))
+                            isMaintype++;   //若包含flag就+1.
+                    if (isMaintype > 0) {
+                        //判斷子類別
+                        if(bt_typetag.isSelected()) {
+                            int isTagtype= 0;
+                            for (TypeItem ti : ri.gettItems())   //判斷所有tag是否包含子類別.
+                                if (ti.gettTag().equals(bt_typetag.getText().toString()))
+                                    isTagtype++;
+                            if (isTagtype > 0)
+                                l_recipe.add(ri.getrHashMap());     //若flag為包含(!=0)則加入list顯示.
+                        } else  l_recipe.add(ri.getrHashMap());     //若flag為包含(!=0)則加入list顯示.
+                    }
+                } else l_recipe.add(ri.getrHashMap());     //若非分類查詢則直接加入list.
                 c1.moveToNext();
             }
-            c1.close();
+        }
+        c1.close();
 
+        //判斷list是否有資料
+        if(l_recipe.size()==0)      dataIsNull();
+        else {  //若有資料則顯示list.
             // TODO: 2018/12/13 食譜推薦排序!!!
 
             //推薦排序
@@ -268,12 +334,13 @@ public class RecipeActivity extends AppCompatActivity {
             lv_recipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {  //所選項目效果, 取出l_recipe資料, 顯示.
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d("被點擊", "recipeList onItemClick.");
+                    //Log.d("被點擊", "recipeList onItemClick.");
                     //所選項目美工效果
                     //lv_recipe.getAdapter().getView(position, view, parent).setSelected(true);
                     //關鍵為, 取得指定item的view, 設定狀態state_selected; Adapter介面下getView()即為item所屬view.
 
-                    final RecipeItem ri= new RecipeItem(l_recipe.get(position));  //取得點擊的項目, 變成一物件.
+                    RecipeItem ri= new RecipeItem(l_recipe.get(position));  //取得點擊的項目, 變成一物件.
+                    ri.settItems(findtItemsById(ri));   //設定ti
 
                     //啟用bt
                     bt_delete.setEnabled(true);
@@ -281,22 +348,55 @@ public class RecipeActivity extends AppCompatActivity {
                     bt_select.setEnabled(true);
 
                     //顯示詳細資料
+                    // TODO: 2018/12/25 顯示照片.
                     tv_rportion.setText(ri.getrPortion());
                     tv_rfood.setText(ri.showFoods());
-                    tv_rtype.setText(ri.getrType());    // TODO: 2018/12/13 getTypes().getSteps()!!!!不可使用arr[]!
+                    ll_rtype.removeAllViews();      //清空linearlayout中的所有view.
+                    //for(int i = 1; !(ri.getTpyetag(i).equals("")); i++){
+                    for(int i = 0; !(ri.showTag(i).equals("")); i++){   //動態新增btview.
+                        final Button bt_rtypetag= new Button(RecipeActivity.this);
+                        bt_rtypetag.setText(ri.showTag(i));
+                        bt_rtypetag.setTextSize(10);
+                        bt_rtypetag.setBackground(getResources().getDrawable(R.drawable.titem_bg));
+                        bt_rtypetag.setLayoutParams(new LinearLayout.LayoutParams(
+                                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));    //設定比重weight.
+                        bt_rtypetag.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(RecipeActivity.this, bt_rtypetag.getText().toString()+".OnClick!", Toast.LENGTH_SHORT).show();
+                                // TODO: 2018/12/20 點擊typeTag查詢類別.
+                            }
+                        });
+
+                        ll_rtype.addView(bt_rtypetag);
+                    }
                     tv_step.setText("1");
                     tv_rcookstep.setText(ri.showSteps(1));
+                    bt_steptp.setEnabled(false);
+                    bt_steptn.setEnabled(true);
 
+                    final RecipeItem ritmp= ri;
                     //切換步驟
                     bt_steptp.setOnClickListener(new View.OnClickListener() {   //上一步.
                         @Override
                         public void onClick(View v) {
                             int step= Integer.valueOf(tv_step.getText().toString());
-                            if(step!=1) {
+                            if(!bt_steptn.isEnabled()) {
+                                bt_steptp.setEnabled(true);
+                                tv_step.setText(String.valueOf(step));
+                                tv_rcookstep.setText(ritmp.showSteps(step));
+                                bt_steptn.setEnabled(true);
+                            } else {
+                                if(step==2) {
+                                    bt_steptp.setEnabled(false);
+                                    bt_steptn.setEnabled(true);
+                                } else {
+                                    bt_steptp.setEnabled(true);
+                                }
                                 step--;
                                 tv_step.setText(String.valueOf(step));
-                                tv_rcookstep.setText(ri.showSteps(step));
-                            } else  Toast.makeText(RecipeActivity.this, "沒有上一步!", Toast.LENGTH_SHORT).show();
+                                tv_rcookstep.setText(ritmp.showSteps(step));
+                            }
                         }
                     });
 
@@ -304,12 +404,16 @@ public class RecipeActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             int step= Integer.valueOf(tv_step.getText().toString());
-                            if(!ri.showSteps(step+1).equals("")) {    //若下一步的回傳值為空, 表無此步驟.
+                            if(ritmp.showSteps(step+1).equals("")) {
+                                bt_steptn.setEnabled(false);
+                                tv_rcookstep.setText("備註：" +ritmp.getrRemark());
+                            } else {    //若下一步的回傳值為空, 表無此步驟.
+                                bt_steptn.setEnabled(true);
                                 step++;
                                 tv_step.setText(String.valueOf(step));
-                                tv_rcookstep.setText(ri.showSteps(step));
-                            } else
-                                Toast.makeText(RecipeActivity.this, "沒有下一步!", Toast.LENGTH_SHORT).show();
+                                tv_rcookstep.setText(ritmp.showSteps(step));
+                                bt_steptp.setEnabled(true);
+                            }
                         }
                     });
 
@@ -319,7 +423,7 @@ public class RecipeActivity extends AppCompatActivity {
                     bt_delete.setOnClickListener(new View.OnClickListener() {   //刪除bt, 再次確認alert, DB刪除後showList().
                         @Override
                         public void onClick(View v) {
-                            final CustomDialog fDelete= new CustomDialog(FridgeActivity.this);
+                            final FridgeDialog fDelete= new FridgeDialog(FridgeActivity.this);
                             fDelete.buildDelete(ri);
                             fDelete.show();
                             fDelete.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -336,7 +440,7 @@ public class RecipeActivity extends AppCompatActivity {
                     bt_revise.setOnClickListener(new View.OnClickListener() {   //修改bt, DB修改後showList().
                         @Override
                         public void onClick(View v) {
-                            final CustomDialog fRevise= new CustomDialog(FridgeActivity.this);
+                            final FridgeDialog fRevise= new FridgeDialog(FridgeActivity.this);
                             fRevise.buildFInput(ri, l_specie);
                             fRevise.show();
                             //監聽alert是否關閉(關閉後執行code)
@@ -379,7 +483,7 @@ public class RecipeActivity extends AppCompatActivity {
         bt_add.setOnClickListener(new View.OnClickListener() {  //
             @Override
             public void onClick(View v) {
-                final CustomDialog fAdd= new CustomDialog(FridgeActivity.this);
+                final FridgeDialog fAdd= new FridgeDialog(FridgeActivity.this);
                 fAdd.buildFInput(l_specie);
                 fAdd.show();
                 //監聽alert是否關閉(關閉後執行code)
@@ -399,7 +503,7 @@ public class RecipeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!bt_search.isSelected()) {
 
-                    final CustomDialog fsearch= new CustomDialog(FridgeActivity.this);
+                    final FridgeDialog fsearch= new FridgeDialog(FridgeActivity.this);
                     fsearch.buildSearch(l_specie);
                     fsearch.show();
                     fsearch.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -428,15 +532,15 @@ public class RecipeActivity extends AppCompatActivity {
         bt_ssetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomDialog specie= new CustomDialog(FridgeActivity.this);
-                specie.buildSset(l_specie);
+                final FridgeDialog specie= new FridgeDialog(FridgeActivity.this);
+                specie.buildSSet(l_specie);
                 specie.show();
                 specie.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         //判斷操作為新增或修改
                         if(specie.getReturn().equals("ADD")) {
-                            final CustomDialog sAdd= new CustomDialog(FridgeActivity.this);
+                            final FridgeDialog sAdd= new FridgeDialog(FridgeActivity.this);
                             sAdd.buildSInput(l_simage);
                             sAdd.show();
                             sAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -451,7 +555,7 @@ public class RecipeActivity extends AppCompatActivity {
                                     Integer.valueOf(specie.getReturn())
                             ));
 
-                            final CustomDialog sRevise= new CustomDialog(FridgeActivity.this);
+                            final FridgeDialog sRevise= new FridgeDialog(FridgeActivity.this);
                             sRevise.buildSInput(si, l_simage);
                             sRevise.show();
                             sRevise.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -480,7 +584,7 @@ public class RecipeActivity extends AppCompatActivity {
         */
     }
 
-    public void typeList() {
+    private void typeList() {
         l_type.clear();
 
         String SELECT= "SELECT * FROM type WHERE 1 ";
@@ -494,6 +598,35 @@ public class RecipeActivity extends AppCompatActivity {
             c.moveToNext();
         }
         c.close();
+    }
+    private ArrayList<TypeItem> findtItemsById(RecipeItem ri) {     //從所有type中找到對應的type放入list.
+        ArrayList<TypeItem> tis= new ArrayList<>();
+        int i=1;
+        for (HashMap<String, Object> map : l_type) {
+            if(map.get("type_id").equals(ri.getTpyetag(i))) {
+                tis.add(new TypeItem(map));
+                i++;
+            }
+        }
+        return tis;
+    }
+
+    private void dataIsNull() {
+        //禁用bt
+        bt_delete.setEnabled(false);
+        bt_revise.setEnabled(false);
+        bt_select.setEnabled(false);
+
+        iv_rimage.setImageDrawable(getResources().getDrawable(
+                R.drawable.specie_delicatessen));
+
+        tv_rportion.setText("");
+        tv_rfood.setText("");
+        ll_rtype.removeAllViews();
+        tv_rcookstep.setText("");
+
+        iv_nodata.setVisibility(View.VISIBLE);
+        Toast.makeText(RecipeActivity.this, "沒有資料!!", Toast.LENGTH_SHORT).show();
     }
 
 }

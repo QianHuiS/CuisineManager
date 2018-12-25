@@ -22,7 +22,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -35,14 +34,14 @@ import java.util.HashMap;
 import static android.content.Context.MODE_PRIVATE;
 
 /*使用方法:
-* CustomDialog ALERT= new CustomDialog(CONTEXT.this);
+* FridgeDialog ALERT= new FridgeDialog(CONTEXT.this);
 * ALERT.BUILD();
 * ALERT.show();
 * ALERT.setOnDismissListener(new ...{
 *   if(!ALERT.getReturn().equals("")) {  mSQLiteDatabase.execSQL(ALERT.getReturn());   }  }
 */
 
-public class CustomDialog extends Dialog {
+public class RecipeDialog extends Dialog {
     private Context context;
     private String rcontent= "";
 
@@ -51,7 +50,7 @@ public class CustomDialog extends Dialog {
     private static final String DATABASE_NAME = "app.db";
     //mSQLiteDatabase = this.openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
 
-    public CustomDialog(Context context) {
+    public RecipeDialog(Context context) {
         super(context);
         init(context);
     }
@@ -62,8 +61,94 @@ public class CustomDialog extends Dialog {
         //build();
     }
 
-    //Food Add
-    public void buildFInput(final ArrayList<HashMap<String, Object>> l_specie) {
+    //Recipe Type Search
+    public void buildTSelect() {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertView = inflater.inflate(R.layout.alertdialog_type, null);    //layout可換!
+
+        final ArrayList<HashMap<String, Object>> l_type= new ArrayList<>();
+        l_type.clear();
+
+        String SELECT= "SELECT DISTINCT type_main FROM type WHERE 1 ";  //distinct 欄位, 表刪除重複資料.
+        Cursor c= mSQLiteDatabase.rawQuery(SELECT, null);
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+            HashMap<String, Object> hm= new HashMap<>();
+            hm.put("type_main", c.getString(0));
+            l_type.add(hm);
+            c.moveToNext();
+        }
+        c.close();
+
+        //gridview選擇項目
+        //讀DBtypeTable(在main)放入list(傳給alert), 放入adapter顯示gridview.
+        GridView gv_typemain= alertView.findViewById(R.id.gv_typemain);
+        SimpleAdapter adapter= new SimpleAdapter(context,
+                l_type, R.layout.gridview_type,
+                new String[]{"type_main"},
+                new int[]{R.id.tv_showtname}
+        );
+        gv_typemain.setAdapter(adapter);
+
+        //gridviewitem選擇事件
+        gv_typemain.setOnItemClickListener(new AdapterView.OnItemClickListener() {    //選擇後設定rcontent=s_id, 關閉alert.
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, Object> selectItem= l_type.get(position);
+                rcontent= (String) selectItem.get("type_main");
+                dismiss();
+            }
+        });
+
+        setContentView(alertView);
+        this.setAlertWindow(0.4, 0.8, true, "left", 0f);
+    }
+
+    //Recipe Type Search
+    public void buildTSelect(final String mainType) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertView = inflater.inflate(R.layout.alertdialog_type, null);    //layout可換!
+
+        final ArrayList<HashMap<String, Object>> l_type= new ArrayList<>();
+        l_type.clear();
+
+        String SELECT= "SELECT DISTINCT type_tag FROM type WHERE type_main='"+mainType+"' ";  //distinct 欄位, 表刪除重複資料.
+        Cursor c= mSQLiteDatabase.rawQuery(SELECT, null);
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+            HashMap<String, Object> hm= new HashMap<>();
+            hm.put("type_tag", c.getString(0));
+            l_type.add(hm);
+            c.moveToNext();
+        }
+        c.close();
+
+        //gridview選擇項目
+        //讀DBtypeTable(在main)放入list(傳給alert), 放入adapter顯示gridview.
+        GridView gv_typemain= alertView.findViewById(R.id.gv_typemain);
+        SimpleAdapter adapter= new SimpleAdapter(context,
+                l_type, R.layout.gridview_type,
+                new String[]{"type_tag"},
+                new int[]{R.id.tv_showtname}
+        );
+        gv_typemain.setAdapter(adapter);
+
+        //gridviewitem選擇事件
+        gv_typemain.setOnItemClickListener(new AdapterView.OnItemClickListener() {    //選擇後設定rcontent=s_id, 關閉alert.
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, Object> selectItem= l_type.get(position);
+                rcontent= (String) selectItem.get("type_tag");
+                dismiss();
+            }
+        });
+
+        setContentView(alertView);
+        this.setAlertWindow(0.4, 0.8, true, "left", 0f);
+    }
+
+    //Recipe Add
+    public void buildRInput(final ArrayList<HashMap<String, Object>> l_specie) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView= inflater.inflate(R.layout.alertdialog_finput, null);    //layout可換!
 
@@ -73,7 +158,7 @@ public class CustomDialog extends Dialog {
         ib_specie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomDialog fSpecie= new CustomDialog(context);
+                final RecipeDialog fSpecie= new RecipeDialog(context);
                 fSpecie.buildSselect(l_specie);
                 fSpecie.show();
                 fSpecie.setOnDismissListener(new OnDismissListener() {
@@ -196,8 +281,8 @@ public class CustomDialog extends Dialog {
         setAlertWindow(0.9, 0.9, false);
     }
 
-    //Food Revise
-    public void buildFInput(final FoodItem fi, final ArrayList<HashMap<String, Object>> l_specie) {
+    //Recipe Revise
+    public void buildRInput(final FoodItem fi, final ArrayList<HashMap<String, Object>> l_specie) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView = inflater.inflate(R.layout.alertdialog_finput, null);    //layout可換!
 
@@ -239,7 +324,7 @@ public class CustomDialog extends Dialog {
         ib_specie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomDialog fSpecie= new CustomDialog(context);
+                final RecipeDialog fSpecie= new RecipeDialog(context);
                 fSpecie.buildSselect(l_specie);
                 fSpecie.show();
                 fSpecie.setOnDismissListener(new OnDismissListener() {
@@ -362,7 +447,7 @@ public class CustomDialog extends Dialog {
         setAlertWindow(0.9, 0.9, false);
     }
 
-    //Specie Select
+    //Type Select
     public void buildSselect(final ArrayList<HashMap<String, Object>> l_specie) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView= inflater.inflate(R.layout.alertdialog_specie, null);    //layout可換!
@@ -390,7 +475,7 @@ public class CustomDialog extends Dialog {
         this.setAlertWindow(0.7, 0.9, true, "right", 0.6f);
     }
 
-    //Food Delete
+    //Recipe Delete
     public void buildDelete(final FoodItem fi) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView = inflater.inflate(R.layout.alertdialog_delete, null);    //layout可換!
@@ -422,7 +507,7 @@ public class CustomDialog extends Dialog {
     }
 
     // TODO: 2018/9/6 待優化, 更多搜尋範圍; between兩日期.多種類.多名稱...?
-    //Food Search
+    //Recipe Search
     public void buildSearch(final ArrayList<HashMap<String, Object>> l_specie) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView = inflater.inflate(R.layout.alertdialog_fsearch, null);    //layout可換!
@@ -433,7 +518,7 @@ public class CustomDialog extends Dialog {
         ib_specie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomDialog fSpecie= new CustomDialog(context);
+                final RecipeDialog fSpecie= new RecipeDialog(context);
                 fSpecie.buildSselect(l_specie);
                 fSpecie.show();
                 fSpecie.setOnDismissListener(new OnDismissListener() {
@@ -569,8 +654,8 @@ public class CustomDialog extends Dialog {
     }
 
 
-    //Specie Set
-    public void buildSset(final ArrayList<HashMap<String, Object>> l_specie) {
+    //Type Set
+    public void buildTset(final ArrayList<HashMap<String, Object>> l_specie) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView= inflater.inflate(R.layout.alertdialog_specie, null);    //layout可換!
 
@@ -608,8 +693,8 @@ public class CustomDialog extends Dialog {
         this.setAlertWindow(0.7, 0.9, true);
     }
 
-    //Specie Add
-    public void buildSInput(final ArrayList<HashMap<String, Object>> l_simage) {     //(修改傳入si)填寫完回傳sqlcode.
+    //Type Add
+    public void buildTInput(final ArrayList<HashMap<String, Object>> l_simage) {     //(修改傳入si)填寫完回傳sqlcode.
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView= inflater.inflate(R.layout.alertdialog_sinput, null);    //layout可換!
 
@@ -672,8 +757,8 @@ public class CustomDialog extends Dialog {
         setAlertWindow(0.8, 0.8, true);
     }
 
-    //Specie Revise
-    public void buildSInput(final SpecieItem si, final ArrayList<HashMap<String, Object>> l_simage) {     //修改傳入si,填寫完回傳sqlcode.
+    //Type Revise
+    public void buildTInput(final SpecieItem si, final ArrayList<HashMap<String, Object>> l_simage) {     //修改傳入si,填寫完回傳sqlcode.
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView= inflater.inflate(R.layout.alertdialog_sinput, null);    //layout可換!
 
@@ -751,10 +836,10 @@ public class CustomDialog extends Dialog {
         bt_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomDialog sDelete= new CustomDialog(context);
+                final RecipeDialog sDelete= new RecipeDialog(context);
                 sDelete.buildDelete(si);
                 sDelete.show();
-                sDelete.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                sDelete.setOnDismissListener(new OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (sDelete.getReturn().equals("")) {   //若取消則無動作, 成功就關閉alert.
@@ -770,7 +855,7 @@ public class CustomDialog extends Dialog {
         setAlertWindow(0.8, 0.8, true);
     }
 
-    //Specie Delete
+    //Type Delete
     public void buildDelete(final SpecieItem si) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView = inflater.inflate(R.layout.alertdialog_delete, null);    //layout可換!
@@ -864,19 +949,19 @@ public class CustomDialog extends Dialog {
         Window window = getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();   //取得當前alert參數.
 
-        if(!gravity.equals(null)) {
+        if(!gravity.equals("")) {
             switch (gravity) {
                 case "top":
-                    window.setGravity(Gravity.TOP);  //對話框居中靠底.
+                    window.setGravity(Gravity.TOP);  //對話框居中靠上.
                     break;
                 case "bottom":
-                    window.setGravity(Gravity.BOTTOM);  //對話框居中靠底.
+                    window.setGravity(Gravity.BOTTOM);  //對話框居中靠下.
                     break;
                 case "left":
-                    window.setGravity(Gravity.LEFT);  //對話框居中靠底.
+                    window.setGravity(Gravity.START);  //對話框居中靠左.
                     break;
                 case "right":
-                    window.setGravity(Gravity.RIGHT);  //對話框居中靠底.
+                    window.setGravity(Gravity.END);  //對話框居中靠右.
                     break;
                 default:
             }

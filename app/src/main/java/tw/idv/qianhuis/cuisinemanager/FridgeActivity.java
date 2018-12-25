@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -534,7 +533,7 @@ public class FridgeActivity extends AppCompatActivity {
                     bt_delete.setOnClickListener(new View.OnClickListener() {   //刪除bt, 再次確認alert, DB刪除後showList().
                         @Override
                         public void onClick(View v) {
-                            final CustomDialog fDelete= new CustomDialog(FridgeActivity.this);
+                            final FridgeDialog fDelete= new FridgeDialog(FridgeActivity.this);
                             fDelete.buildDelete(fi);
                             fDelete.show();
                             fDelete.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -559,7 +558,7 @@ public class FridgeActivity extends AppCompatActivity {
                     bt_revise.setOnClickListener(new View.OnClickListener() {   //修改bt, DB修改後showList().
                         @Override
                         public void onClick(View v) {
-                            final CustomDialog fRevise= new CustomDialog(FridgeActivity.this);
+                            final FridgeDialog fRevise= new FridgeDialog(FridgeActivity.this);
                             fRevise.buildFInput(fi, l_specie);
                             fRevise.show();
                             //監聽alert是否關閉(關閉後執行code)
@@ -607,7 +606,7 @@ public class FridgeActivity extends AppCompatActivity {
         bt_add.setOnClickListener(new View.OnClickListener() {  //
             @Override
             public void onClick(View v) {
-                final CustomDialog fAdd= new CustomDialog(FridgeActivity.this);
+                final FridgeDialog fAdd= new FridgeDialog(FridgeActivity.this);
                 fAdd.buildFInput(l_specie);
                 fAdd.show();
                 //監聽alert是否關閉(關閉後執行code)
@@ -636,7 +635,7 @@ public class FridgeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!bt_search.isSelected()) {
 
-                    final CustomDialog fsearch= new CustomDialog(FridgeActivity.this);
+                    final FridgeDialog fsearch= new FridgeDialog(FridgeActivity.this);
                     fsearch.buildSearch(l_specie);
                     fsearch.show();
                     fsearch.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -671,15 +670,15 @@ public class FridgeActivity extends AppCompatActivity {
         bt_ssetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomDialog specie= new CustomDialog(FridgeActivity.this);
-                specie.buildSset(l_specie);
+                final FridgeDialog specie= new FridgeDialog(FridgeActivity.this);
+                specie.buildSSet(l_specie);
                 specie.show();
                 specie.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         //判斷操作為新增或修改
                         if(specie.getReturn().equals("ADD")) {
-                            final CustomDialog sAdd= new CustomDialog(FridgeActivity.this);
+                            final FridgeDialog sAdd= new FridgeDialog(FridgeActivity.this);
                             sAdd.buildSInput(l_simage);
                             sAdd.show();
                             sAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -705,7 +704,7 @@ public class FridgeActivity extends AppCompatActivity {
                                     Integer.valueOf(specie.getReturn())
                             ));
 
-                            final CustomDialog sRevise= new CustomDialog(FridgeActivity.this);
+                            final FridgeDialog sRevise= new FridgeDialog(FridgeActivity.this);
                             sRevise.buildSInput(si, l_simage);
                             sRevise.show();
                             sRevise.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -856,7 +855,7 @@ public class FridgeActivity extends AppCompatActivity {
             bt_tsetting= findViewById(R.id.bt_tsetting);
 
             bt_typemain= findViewById(R.id.bt_typemain);
-            bt_typecontent= findViewById(R.id.bt_typecontent);
+            bt_typetag= findViewById(R.id.bt_typetag);
 
             iv_nodata= findViewById(R.id.iv_nodata);
             lv_recipe= findViewById(R.id.lv_recipe);
@@ -1077,21 +1076,21 @@ public class FridgeActivity extends AppCompatActivity {
             c.moveToPosition(2);
             String types1= c.getString(0);
             c.moveToPosition(7);
-            types1= types1.concat( " " +c.getString(0)); //以空格分開各tag.
+            types1= types1.concat( "_" +c.getString(0)); //以空格分開各tag.
             c.moveToPosition(12);
-            types1= types1.concat( " " +c.getString(0)); //以空格分開各tag.
+            types1= types1.concat( "_" +c.getString(0)); //以空格分開各tag.
             c.moveToPosition(18);
-            types1= types1.concat( " " +c.getString(0)); //以空格分開各tag.
+            types1= types1.concat( "_" +c.getString(0)); //以空格分開各tag.
             //Log.d("types1", "types1= "+types1);
 
-            c.moveToPosition(1);
+            c.moveToPosition(0);
             String types2= c.getString(0);
+            c.moveToPosition(1);
+            types2= types2.concat( "_" +c.getString(0)); //以空格分開各tag.
             c.moveToPosition(7);
-            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
+            types2= types2.concat( "_" +c.getString(0)); //以空格分開各tag.
             c.moveToPosition(13);
-            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
-            c.moveToPosition(18);
-            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
+            types2= types2.concat( "_" +c.getString(0)); //以空格分開各tag.
             //Log.d("types2", "types2= "+types2);
             c.close();
 
@@ -1101,7 +1100,7 @@ public class FridgeActivity extends AppCompatActivity {
                             "豆包沖洗乾淨，小心的將水擠乾。__" +
                                     "鍋子小火燒熱，加入1大匙油，將薑片煸香後取出，豆包兩面煎恰恰。__" +
                                     "佐醬油膏+香油和香菜，趁熱切小塊食用。",
-                            "圖","無備註"},
+                            "圖","無備註。"},
                     {"私房",types2,"金針菇炒絲瓜","圖",
                             "3","絲瓜 1 條 _金針菇 1 包 _老薑 3 片",
                             "絲瓜洗淨削皮切片，金針菇洗淨切3段。__" +

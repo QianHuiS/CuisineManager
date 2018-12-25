@@ -1,41 +1,40 @@
 package tw.idv.qianhuis.cuisinemanager;
 
-import android.util.Log;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RecipeItem {
     private String rId;
     private String rPhc;
-    private String rType;   //未分割處理的type.
+    private String rTypes;   //未分割處理的type.
     private String rName;
     private String rImage;
     private String rPortion;
-    private String rFood;   //未分割處理的food.
-    private String rCookstep;   //未分割處理的cookstep
-    private String rStepimage;
+    private String rFoods;   //未分割處理的food.
+    private String rCooksteps;   //未分割處理的cookstep
+    private String rStepimages;
     private String rRemark;
 
-    private TypeItem tItem;
+    private ArrayList<TypeItem> tItems;
 
     //public FoodItem(){};
 
     //建立HashMap
     public RecipeItem(String rid, String rphc, String rtype, String rname,
                       String rimage, String rportion, String rfood, String rcookstep,
-                      String rstepimage, String rremark, TypeItem titem){
+                      String rstepimage, String rremark, ArrayList<TypeItem> titem){
         rId = rid;
         rPhc = rphc; //種類!!
-        rType = rtype;
+        rTypes = rtype;
         rName = rname;
         rImage = rimage;
         rPortion= rportion;
-        rFood = rfood;
-        rCookstep = rcookstep;
-        rStepimage = rstepimage;
+        rFoods = rfood;
+        rCooksteps = rcookstep;
+        rStepimages = rstepimage;
         rRemark = rremark;
 
-        tItem = titem;
+        tItems = titem;
 
     }
 
@@ -43,21 +42,14 @@ public class RecipeItem {
     public RecipeItem(HashMap<String, Object> selectItem){
         rId = (String)selectItem.get("recipe_id");   //拿出物件中的某資訊.
         rPhc = (String)selectItem.get("recipe_phc");
-        rType = (String)selectItem.get("recipe_type");
+        rTypes = (String)selectItem.get("recipe_types");
         rName = (String)selectItem.get("recipe_name");
         rImage = (String)selectItem.get("recipe_image");
         rPortion= (String)selectItem.get("recipe_portion");
-        rFood = (String)selectItem.get("recipe_food");
-        rCookstep = (String)selectItem.get("recipe_cookstep");
-        rStepimage = (String)selectItem.get("recipe_stepimage");
+        rFoods = (String)selectItem.get("recipe_foods");
+        rCooksteps = (String)selectItem.get("recipe_cooksteps");
+        rStepimages = (String)selectItem.get("recipe_stepimages");
         rRemark = (String)selectItem.get("recipe_remark");
-
-        tItem = new TypeItem(
-                (String)selectItem.get("type_id"),
-                (String)selectItem.get("type_main"),
-                (String)selectItem.get("type_tag")
-        );
-
     }
 
     //Getter&Setter
@@ -79,12 +71,12 @@ public class RecipeItem {
         this.rPhc = rPhc;
     }
 
-    public String getrType() {
-        return rType;
+    public String getrTypes() {
+        return rTypes;
     }
 
-    public void setrType(String rType) {
-        this.rType = rType;
+    public void setrTypes(String rTypes) {
+        this.rTypes = rTypes;
     }
 
     public String getrName() {
@@ -111,28 +103,28 @@ public class RecipeItem {
         this.rPortion = rPortion;
     }
 
-    public String getrFood() {
-        return rFood;
+    public String getrFoods() {
+        return rFoods;
     }
 
-    public void setrFood(String rFood) {
-        this.rFood = rFood;
+    public void setrFoods(String rFoods) {
+        this.rFoods = rFoods;
     }
 
-    public String getrCookstep() {
-        return rCookstep;
+    public String getrCooksteps() {
+        return rCooksteps;
     }
 
-    public void setrCookstep(String rCookstep) {
-        this.rCookstep = rCookstep;
+    public void setrCooksteps(String rCooksteps) {
+        this.rCooksteps = rCooksteps;
     }
 
-    public String getrStepimage() {
-        return rStepimage;
+    public String getrStepimages() {
+        return rStepimages;
     }
 
-    public void setrStepimage(String rStepimage) {
-        this.rStepimage = rStepimage;
+    public void setrStepimages(String rStepimages) {
+        this.rStepimages = rStepimages;
     }
 
     public String getrRemark() {
@@ -143,12 +135,12 @@ public class RecipeItem {
         this.rRemark = rRemark;
     }
 
-    public TypeItem gettItem() {
-        return tItem;
+    public ArrayList<TypeItem> gettItems() {
+        return tItems;
     }
 
-    public void settItem(TypeItem tItem) {
-        this.tItem = tItem;
+    public void settItems(ArrayList<TypeItem> tItems) {
+        this.tItems = tItems;
     }
 
     //其他
@@ -156,18 +148,15 @@ public class RecipeItem {
         HashMap<String, Object> rHashMap= new HashMap<>();
         rHashMap.put("recipe_id", rId);
         rHashMap.put("recipe_phc", rPhc);
-        rHashMap.put("recipe_type", rType);
+        rHashMap.put("recipe_types", rTypes);
         rHashMap.put("recipe_name", rName);
         rHashMap.put("recipe_image", rImage);
         rHashMap.put("recipe_portion", rPortion);
-        rHashMap.put("recipe_food", rFood);
-        rHashMap.put("recipe_cookstep", rCookstep);
-        rHashMap.put("recipe_stepimage", rStepimage);
+        rHashMap.put("recipe_foods", rFoods);
+        rHashMap.put("recipe_cooksteps", rCooksteps);
+        rHashMap.put("recipe_stepimages", rStepimages);
         rHashMap.put("recipe_remark", rRemark);
-
-        rHashMap.put("type_id", tItem.gettId());
-        rHashMap.put("type_main", tItem.gettMain());
-        rHashMap.put("type_tag", tItem.gettTag());
+        rHashMap.put("recipe_titems", tItems);
 
         return rHashMap;
     }
@@ -177,14 +166,14 @@ public class RecipeItem {
         //rFood範例= "豆包 4 個 _老薑 3 片 _香菜 0 適量 "
         int separate= 0;    //查詢字串index, 有幾次分割(分割完幾個字串).
         int num= 0;
-        while(rFood.indexOf("_", num)>0) {   //若字串中包含"_"(否為-1則不成立).
-            num= rFood.indexOf("_", num);
+        while(rFoods.indexOf("_", num)>0) {   //若字串中包含"_"(否為-1則不成立).
+            num= rFoods.indexOf("_", num);
             //tmp1= tmp1.substring(tmp1.indexOf("_")+1);   //tmp=第一個出現"_"後, 到結尾的子字串.
             separate++;
         }
 
         String[][] foods= new String[separate+1][3];   //[分割次數+1個食材][名稱數量單位].
-        String tmp1= rFood;
+        String tmp1= rFoods;
         String tmp2= "";
         for(int i=0; i<foods.length; i++) {     //先分割各食材, 再分割名稱數量單位.
             if(tmp1.contains("_")) {    //若字串中包含"_"(不是最後一個).
@@ -207,12 +196,12 @@ public class RecipeItem {
     // TODO: 2018/12/12 待優化, 食材顯示改為可點擊的自定義view.
     public String showFoods() {
         String showf= "";
-        showf= rFood;
+        showf= rFoods;
         showf= showf.replace(" _", "\n").trim().replace("0", "");
 
         /*
         //有編號
-        String tmp= rFood;
+        String tmp= rFoods;
         int i= 1;
         while(tmp.contains("_")) {    //字串是否包含"_".
             if(tmp.contains("0"))   tmp.replace("0", "");   //若有數量0則省略.
@@ -230,10 +219,34 @@ public class RecipeItem {
     }
 
     //分割rtype
-    private String[] getTypetag() {
-        int separate= 0;
-        String[] types = new String[separate];
-        return types;
+    public String getTpyetag(int tag) {
+        String typtag= "";
+
+        //有編號
+        String tmp= rTypes;
+        int i= 1;
+        while(tmp.contains("_")) {    //字串是否包含"_".
+            if(i==tag) {
+                typtag = typtag.concat(tmp.substring(0, tmp.indexOf("_"))).trim();     //取得開始到第一個"_"前的子字串, 去除首尾空白.
+                //Log.d("結果", "i= "+i+"   step= "+step+"   shows= "+shows);
+            }
+            i++;
+            tmp= tmp.substring(tmp.indexOf("_")+1);   //tmp1= 第一個"_"後, 到結尾的字串.
+            //Log.d("i++", "i= "+i+"   tmp= "+tmp);
+        }
+        //剩最後一項(tmp沒有"_")
+        if(i==tag) {
+            typtag= typtag.concat(tmp).trim();
+            //Log.d("結果", "i= "+i+"   step= "+step+"   shows= "+shows);
+        }
+
+        return typtag;
+    }
+
+    public String showTag(int tag) {
+        String showt= "";
+        if(tag<tItems.size())   showt= tItems.get(tag).gettTag();
+        return showt;
     }
 
     //分割rcookstept
@@ -247,7 +260,7 @@ public class RecipeItem {
         String shows= "";
 
         //有編號
-        String tmp= rCookstep;
+        String tmp= rCooksteps;
         int i= 1;
         while(tmp.contains("_")) {    //字串是否包含"_".
             if(i==step) {
