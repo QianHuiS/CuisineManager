@@ -339,7 +339,7 @@ public class RecipeActivity extends AppCompatActivity {
                     //lv_recipe.getAdapter().getView(position, view, parent).setSelected(true);
                     //關鍵為, 取得指定item的view, 設定狀態state_selected; Adapter介面下getView()即為item所屬view.
 
-                    RecipeItem ri= new RecipeItem(l_recipe.get(position));  //取得點擊的項目, 變成一物件.
+                    final RecipeItem ri= new RecipeItem(l_recipe.get(position));  //取得點擊的項目, 變成一物件.
                     ri.settItems(findtItemsById(ri));   //設定ti
 
                     //啟用bt
@@ -349,6 +349,7 @@ public class RecipeActivity extends AppCompatActivity {
 
                     //顯示詳細資料
                     // TODO: 2018/12/25 顯示照片.
+                    //iv_rimage.setImageResource(ri.getrImage());
                     tv_rportion.setText(ri.getrPortion());
                     tv_rfood.setText(ri.showFoods());
                     ll_rtype.removeAllViews();      //清空linearlayout中的所有view.
@@ -359,7 +360,7 @@ public class RecipeActivity extends AppCompatActivity {
                         bt_rtypetag.setTextSize(10);
                         bt_rtypetag.setBackground(getResources().getDrawable(R.drawable.titem_bg));
                         bt_rtypetag.setLayoutParams(new LinearLayout.LayoutParams(
-                                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));    //設定比重weight.
+                                200, LinearLayout.LayoutParams.WRAP_CONTENT, 0));    //設定比重weight.
                         bt_rtypetag.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -418,24 +419,23 @@ public class RecipeActivity extends AppCompatActivity {
                     });
 
                     // TODO: 2018/12/13 刪除.修改食譜!!!
-                    /*
+
                     //刪除recipe資料
                     bt_delete.setOnClickListener(new View.OnClickListener() {   //刪除bt, 再次確認alert, DB刪除後showList().
                         @Override
                         public void onClick(View v) {
-                            final FridgeDialog fDelete= new FridgeDialog(FridgeActivity.this);
-                            fDelete.buildDelete(ri);
-                            fDelete.show();
-                            fDelete.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            final RecipeDialog rDelete= new RecipeDialog(RecipeActivity.this);
+                            rDelete.buildDelete(ri);
+                            rDelete.show();
+                            rDelete.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
-
-                                    fridgeList(WHERE); //刷新lv.
+                                    recipeList(WHERE); //刷新lv.
                                 }
                             });
                         }
                     });
-
+/*
                     //修改food資料
                     bt_revise.setOnClickListener(new View.OnClickListener() {   //修改bt, DB修改後showList().
                         @Override
@@ -478,56 +478,56 @@ public class RecipeActivity extends AppCompatActivity {
 
         // TODO: 2018/8/21 待優化, 數量單位輸入改用下拉選單?
         // TODO: 2018/9/6 待優化, 自訂鍵盤顯示.
-        /*
-        //新增food資料
+
+        //新增recipe資料
         bt_add.setOnClickListener(new View.OnClickListener() {  //
             @Override
             public void onClick(View v) {
-                final FridgeDialog fAdd= new FridgeDialog(FridgeActivity.this);
-                fAdd.buildFInput(l_specie);
-                fAdd.show();
+                final RecipeDialog rAdd= new RecipeDialog(RecipeActivity.this);
+                rAdd.buildRInput();
+                rAdd.show();
                 //監聽alert是否關閉(關閉後執行code)
-                fAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                rAdd.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        fridgeList(WHERE); //刷新lv.
+                        recipeList(WHERE); //刷新lv.
                     }
                 });
             }
         });
 
-
-        //搜尋food資料
+        //搜尋recipe資料
         bt_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!bt_search.isSelected()) {
 
-                    final FridgeDialog fsearch= new FridgeDialog(FridgeActivity.this);
-                    fsearch.buildSearch(l_specie);
-                    fsearch.show();
-                    fsearch.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    final RecipeDialog rSearch= new RecipeDialog(RecipeActivity.this);
+                    rSearch.buildSearch();
+                    rSearch.show();
+                    rSearch.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
-                            if(fsearch.getReturn().equals("")) {
-                                Toast.makeText(FridgeActivity.this, "查詢失敗!?", Toast.LENGTH_SHORT).show();
-                            } else {
-                                fridgeList(fsearch.getReturn());
-                                bt_freezing.setSelected(false);
-                                bt_refrigerated.setSelected(false);
-                                bt_fresh.setSelected(false);
+                            Log.d("WHERE", "where="+rSearch.getReturn());
+                            if(!rSearch.getReturn().equals("")) {
+                                recipeList(rSearch.getReturn());
+                                bt_typemain.setSelected(false);
+                                bt_typemain.setText("");
+                                bt_typetag.setSelected(false);
+                                bt_typetag.setEnabled(false);
+                                bt_typetag.setText("");
                                 bt_search.setSelected(true);
-                                Toast.makeText(FridgeActivity.this, "查詢成功!!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RecipeActivity.this, "查詢成功!!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 } else {
                     bt_search.setSelected(false);
-                    fridgeList(ALL);
+                    recipeList(ALL);
                 }
             }
         });
-
+/*
         //種類設定
         bt_ssetting.setOnClickListener(new View.OnClickListener() {
             @Override

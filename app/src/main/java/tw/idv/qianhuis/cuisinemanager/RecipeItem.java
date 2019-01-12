@@ -1,5 +1,7 @@
 package tw.idv.qianhuis.cuisinemanager;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -223,18 +225,19 @@ public class RecipeItem {
         String typtag= "";
 
         //有編號
-        String tmp= rTypes;
+        String tmp= rTypes.trim();      //等同.substring(1,rTypes.length()-1);  //去除頭尾" ".
+        //Log.d("rTypes", "rtypes="+rTypes+"\ntmp="+tmp);
         int i= 1;
-        while(tmp.contains("_")) {    //字串是否包含"_".
+        while(tmp.contains(" ")) {    //字串是否包含" ".
             if(i==tag) {
-                typtag = typtag.concat(tmp.substring(0, tmp.indexOf("_"))).trim();     //取得開始到第一個"_"前的子字串, 去除首尾空白.
+                typtag = typtag.concat(tmp.substring(0, tmp.indexOf(" "))).trim();     //取得開始到第一個" "前的子字串, 去除首尾空白.
                 //Log.d("結果", "i= "+i+"   step= "+step+"   shows= "+shows);
             }
             i++;
-            tmp= tmp.substring(tmp.indexOf("_")+1);   //tmp1= 第一個"_"後, 到結尾的字串.
+            tmp= tmp.substring(tmp.indexOf(" ")+1);   //tmp= 第一個" "後, 到結尾的字串.
             //Log.d("i++", "i= "+i+"   tmp= "+tmp);
         }
-        //剩最後一項(tmp沒有"_")
+        //剩最後一項(tmp沒有" ")
         if(i==tag) {
             typtag= typtag.concat(tmp).trim();
             //Log.d("結果", "i= "+i+"   step= "+step+"   shows= "+shows);

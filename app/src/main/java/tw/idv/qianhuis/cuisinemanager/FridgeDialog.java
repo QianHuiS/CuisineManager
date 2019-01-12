@@ -545,7 +545,7 @@ public class FridgeDialog extends Dialog {
                     if (fcontent[i].equals("")) continue;
                     else {
                         if (first)  first= false;
-                        else    WHERE += " and ";
+                        else    WHERE += " AND ";
 
                         WHERE += column[i];
                     }

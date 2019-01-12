@@ -98,9 +98,9 @@ public class FridgeActivity extends AppCompatActivity {
         String CREATE_RECIPE_TABLE = "CREATE TABLE IF NOT EXISTS " +  //建立表單(若表單不存在!!). 建錯移除app.
                 "recipe (" +
                 "recipe_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "recipe_phc TEXT, recipe_type TEXT, " +
+                "recipe_phc TEXT, recipe_types TEXT, " +
                 "recipe_name TEXT, recipe_image TEXT, " +
-                "recipe_portion INTEGER, recipe_food TEXT, " +
+                "recipe_portion INTEGER, recipe_foods TEXT, " +
                 "recipe_cookstep TEXT, recipe_stepimage, " +
                 "recipe_remark TEXT)";
         mSQLiteDatabase.execSQL(CREATE_RECIPE_TABLE);     //執行SQL指令的字串.
@@ -635,16 +635,16 @@ public class FridgeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!bt_search.isSelected()) {
 
-                    final FridgeDialog fsearch= new FridgeDialog(FridgeActivity.this);
-                    fsearch.buildSearch(l_specie);
-                    fsearch.show();
-                    fsearch.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    final FridgeDialog fSearch= new FridgeDialog(FridgeActivity.this);
+                    fSearch.buildSearch(l_specie);
+                    fSearch.show();
+                    fSearch.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
-                            if(fsearch.getReturn().equals("")) {
+                            if(fSearch.getReturn().equals("")) {
                                 Toast.makeText(FridgeActivity.this, "查詢失敗!?", Toast.LENGTH_SHORT).show();
                             } else {
-                                fridgeList(fsearch.getReturn());
+                                fridgeList(fSearch.getReturn());
                                 bt_freezing.setSelected(false);
                                 bt_refrigerated.setSelected(false);
                                 bt_fresh.setSelected(false);
@@ -1074,23 +1074,25 @@ public class FridgeActivity extends AppCompatActivity {
         if(num==0) {
             c=mSQLiteDatabase.rawQuery("SELECT * FROM type WHERE 1 ", null);
             c.moveToPosition(2);
-            String types1= c.getString(0);
+            String types1= " " +c.getString(0);
             c.moveToPosition(7);
-            types1= types1.concat( "_" +c.getString(0)); //以空格分開各tag.
+            types1= types1.concat( " " +c.getString(0)); //以空格分開各tag.
             c.moveToPosition(12);
-            types1= types1.concat( "_" +c.getString(0)); //以空格分開各tag.
+            types1= types1.concat( " " +c.getString(0)); //以空格分開各tag.
             c.moveToPosition(18);
-            types1= types1.concat( "_" +c.getString(0)); //以空格分開各tag.
-            //Log.d("types1", "types1= "+types1);
+            types1= types1.concat( " " +c.getString(0) +" "); //以空格分開各tag.
+            Log.d("types1", "types1= "+types1);
 
             c.moveToPosition(0);
-            String types2= c.getString(0);
+            String types2= " " +c.getString(0);
             c.moveToPosition(1);
-            types2= types2.concat( "_" +c.getString(0)); //以空格分開各tag.
+            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
             c.moveToPosition(7);
-            types2= types2.concat( "_" +c.getString(0)); //以空格分開各tag.
+            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
             c.moveToPosition(13);
-            types2= types2.concat( "_" +c.getString(0)); //以空格分開各tag.
+            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
+            c.moveToPosition(18);
+            types2= types2.concat( " " +c.getString(0) +" "); //以空格分開各tag.
             //Log.d("types2", "types2= "+types2);
             c.close();
 
@@ -1113,8 +1115,8 @@ public class FridgeActivity extends AppCompatActivity {
             String[] sql= new String[recipearr.length];
             for(int i=0; i<recipearr.length; i++) {
                 sql[i]= "INSERT INTO recipe (" +
-                        "recipe_phc, recipe_type, recipe_name, " +
-                        "recipe_image, recipe_portion, recipe_food," +
+                        "recipe_phc, recipe_types, recipe_name, " +
+                        "recipe_image, recipe_portion, recipe_foods," +
                         "recipe_cookstep, recipe_stepimage, recipe_remark) " +
                         "VALUES('" + recipearr[i][0] + "', '" + recipearr[i][1] + "', " +
                         "'" + recipearr[i][2] + "', '" + recipearr[i][3] + "', " +

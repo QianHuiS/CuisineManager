@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/fridge_bg_v"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="30dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/tv_title"
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:text="名稱：" />
+
+            <TextView
+                style="@style/tv_title"
+                android:layout_weight="10"
+                android:gravity="end"
+                android:text="食材：" />
+
+            <TextView
+                style="@style/tv_title"
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:text="分類：" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_rname"
+                style="@style/et_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="我是料理"
+                android:inputType="textPersonName" />
+
+            <!--
+            <EditText
+                android:id="@+id/et_fposition"
+                style="@style/et_content"
+                android:layout_weight="1"
+                android:hint="菜菜ㄉ家"
+                android:inputType="textPersonName" />
+-->
+
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:id="@+id/ll_rfood"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:orientation="horizontal"></LinearLayout>
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_rfood"
+                    style="@style/et_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="菜菜"
+                    android:inputType="textPersonName" />
+
+                <Button
+                    android:id="@+id/bt_rfoodadd"
+                    style="@style/bt_mini"
+                    android:text="+" />
+
+                <!--
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="~"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/bt_fstoragetime2"
+                    style="@style/bt_date" />
+-->
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_rtype"
+                    style="@style/et_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="某某類"
+                    android:inputType="textPersonName" />
+
+                <Button
+                    android:id="@+id/bt_rtypeall"
+                    style="@style/bt_mini"
+                    android:text="..." />
+
+                <!--
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="~"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/bt_fstoragetime2"
+                    style="@style/bt_date" />
+-->
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingRight="30dp">
+
+        <Button
+            android:id="@+id/bt_ok"
+            style="@style/bt_big"
+            android:layout_width="95dp"
+            android:layout_weight="1"
+            android:text="確認" />
+    </LinearLayout>
+
+</LinearLayout>

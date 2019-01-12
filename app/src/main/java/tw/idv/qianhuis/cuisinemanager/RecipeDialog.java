@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -16,12 +17,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -147,124 +147,325 @@ public class RecipeDialog extends Dialog {
         this.setAlertWindow(0.4, 0.8, true, "left", 0f);
     }
 
-    //Recipe Add
-    public void buildRInput(final ArrayList<HashMap<String, Object>> l_specie) {
+    //Recipe Type Search
+    public void buildTAll() {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View alertView= inflater.inflate(R.layout.alertdialog_finput, null);    //layout可換!
+        final View alertView = inflater.inflate(R.layout.alertdialog_type, null);    //layout可換!
 
-        //種類輸入
-        final ImageButton ib_specie= alertView.findViewById(R.id.ib_specie);
-        ib_specie.setTag("");   //"初始化"tag, 避免無輸入時錯誤.
-        ib_specie.setOnClickListener(new View.OnClickListener() {
+        final ArrayList<HashMap<String, Object>> l_type= new ArrayList<>();
+        l_type.clear();
+
+        String SELECT= "SELECT DISTINCT type_tag FROM type WHERE 1 ";  //distinct 欄位, 表刪除重複資料.
+        Cursor c= mSQLiteDatabase.rawQuery(SELECT, null);
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+            HashMap<String, Object> hm= new HashMap<>();
+            hm.put("type_tag", c.getString(0));
+            l_type.add(hm);
+            c.moveToNext();
+        }
+        c.close();
+
+        //gridview選擇項目
+        //讀DBtypeTable(在main)放入list(傳給alert), 放入adapter顯示gridview.
+        GridView gv_typemain= alertView.findViewById(R.id.gv_typemain);
+        SimpleAdapter adapter= new SimpleAdapter(context,
+                l_type, R.layout.gridview_type,
+                new String[]{"type_tag"},
+                new int[]{R.id.tv_showtname}
+        );
+        gv_typemain.setAdapter(adapter);
+
+        //gridviewitem選擇事件
+        gv_typemain.setOnItemClickListener(new AdapterView.OnItemClickListener() {    //選擇後設定rcontent=s_id, 關閉alert.
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, Object> selectItem= l_type.get(position);
+                rcontent= (String) selectItem.get("type_tag");
+                dismiss();
+            }
+        });
+
+        setContentView(alertView);
+        this.setAlertWindow(0.4, 0.8, true, "left", 0f);
+    }
+
+    //Recipe Add
+    public void buildRInput() {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertView= inflater.inflate(R.layout.alertdialog_rinput, null);    //layout可換!
+
+        //切換步驟
+        TextView tv_part1= alertView.findViewById(R.id.tv_part1);
+        tv_part1.setSelected(true);
+
+        Button bt_tp= alertView.findViewById(R.id.bt_tp);
+        bt_tp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final RecipeDialog fSpecie= new RecipeDialog(context);
-                fSpecie.buildSselect(l_specie);
-                fSpecie.show();
-                fSpecie.setOnDismissListener(new OnDismissListener() {
+                TextView tv_part1= alertView.findViewById(R.id.tv_part1);
+                TextView tv_part2= alertView.findViewById(R.id.tv_part2);
+                TextView tv_part3= alertView.findViewById(R.id.tv_part3);
+                LinearLayout ll_part1= alertView.findViewById(R.id.ll_part1);
+                LinearLayout ll_part2= alertView.findViewById(R.id.ll_part2);
+                LinearLayout ll_part3= alertView.findViewById(R.id.ll_part3);
+                Button bt_ok= alertView.findViewById(R.id.bt_ok);
+
+                if(ll_part3.getVisibility()==View.VISIBLE) {
+                    tv_part3.setSelected(false);
+                    tv_part2.setSelected(true);
+                    ll_part3.setVisibility(View.GONE);
+                    ll_part2.setVisibility(View.VISIBLE);
+                    bt_ok.setEnabled(false);
+                } else if(ll_part2.getVisibility()==View.VISIBLE) {
+                    tv_part2.setSelected(false);
+                    tv_part1.setSelected(true);
+                    ll_part2.setVisibility(View.GONE);
+                    ll_part1.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        Button bt_tn= alertView.findViewById(R.id.bt_tn);
+        bt_tn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView tv_part1= alertView.findViewById(R.id.tv_part1);
+                TextView tv_part2= alertView.findViewById(R.id.tv_part2);
+                TextView tv_part3= alertView.findViewById(R.id.tv_part3);
+                LinearLayout ll_part1= alertView.findViewById(R.id.ll_part1);
+                LinearLayout ll_part2= alertView.findViewById(R.id.ll_part2);
+                LinearLayout ll_part3= alertView.findViewById(R.id.ll_part3);
+                Button bt_ok= alertView.findViewById(R.id.bt_ok);
+
+                if(ll_part1.getVisibility()==View.VISIBLE) {
+                    tv_part1.setSelected(false);
+                    tv_part2.setSelected(true);
+                    ll_part1.setVisibility(View.GONE);
+                    ll_part2.setVisibility(View.VISIBLE);
+                } else if(ll_part2.getVisibility()==View.VISIBLE) {
+                    tv_part2.setSelected(false);
+                    tv_part3.setSelected(true);
+                    ll_part2.setVisibility(View.GONE);
+                    ll_part3.setVisibility(View.VISIBLE);
+                    bt_ok.setEnabled(true);
+                }
+            }
+        });
+
+        //分類輸入
+        final LinearLayout ll_rtype= alertView.findViewById(R.id.ll_rtype);
+        ll_rtype.setTag("");
+        final Button bt_rtypeall= alertView.findViewById(R.id.bt_rtypeall);
+        bt_rtypeall.setOnClickListener(new View.OnClickListener() {     //選擇分類
+            @Override
+            public void onClick(View v) {
+                final RecipeDialog rd= new RecipeDialog(context);
+                rd.buildTAll();
+                rd.show();
+                rd.setOnDismissListener(new OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if(!fSpecie.getReturn().equals("")) {
-                            TextView tv_showsname= alertView.findViewById(R.id.tv_showsname);
-                            TextView tv_showslife= alertView.findViewById(R.id.tv_showslife);
+                        if(!rd.getReturn().equals("")) {
+                            //分類增加
+                            final Button bt_rtype= new Button(context);
+                            bt_rtype.setText(rd.getReturn());
+                            bt_rtype.setTextSize(10);
+                            bt_rtype.setBackground(ContextCompat.getDrawable(context, R.drawable.titem_bg));
+                            bt_rtype.setLayoutParams(new LinearLayout.LayoutParams(
+                                    200, LinearLayout.LayoutParams.WRAP_CONTENT, 0));    //設定比重weight.
+                            bt_rtype.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    ll_rtype.removeView(bt_rtype);
+                                    ll_rtype.setTag(ll_rtype.getTag().toString().replace(
+                                            " "+bt_rtype.getText().toString(),""));    //將bt文字消除(替換為空字串).
+                                }
+                            });
 
-                            //取得點選的種類ID, 取出詳細資料顯示在button.
-                            SpecieItem si= new SpecieItem(l_specie.get(
-                                    Integer.valueOf(fSpecie.getReturn())    //回傳的item position.
-                            ));
-
-                            tv_showsname.setText(si.getsName());
-                            tv_showslife.setText(si.getsLife());
-                            ib_specie.setTag(si.getsId());  //用Tag紀錄ID.
-                            ib_specie.setImageResource(Integer.valueOf(si.getImgId()));
+                            ll_rtype.addView(bt_rtype);
+                            ll_rtype.setTag(ll_rtype.getTag().toString().concat(" "+bt_rtype.getText().toString()));    //取得bt文字, 接到tag中.
                         }
                     }
                 });
             }
         });
 
-        //位置輸入
-        final RadioGroup rg_fposition= alertView.findViewById(R.id.rg_fposition);
-        rg_fposition.setTag("");
-        rg_fposition.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        //圖片輸入
+        final ImageButton ib_rimg= alertView.findViewById(R.id.ib_rimg);
+        ib_rimg.setTag("");
+        ib_rimg.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId) {
-                    case R.id.rb_freezing:
-                        rg_fposition.setTag("冷凍室");
-                        break;
-                    case R.id.rb_refrigerated:
-                        rg_fposition.setTag("冷藏室");
-                        break;
-                    case R.id.rb_fresh:
-                        rg_fposition.setTag("保鮮室");
-                        break;
-                    default:
+            public void onClick(View v) {
+                // TODO: 2019/1/11 選擇圖片.
+                ib_rimg.setTag("click");
+            }
+        });
+
+        //食材輸入
+        final LinearLayout ll_rfoods= alertView.findViewById(R.id.ll_rfoods);
+        ll_rfoods.setTag("");
+
+        if (ll_rfoods.getChildCount() == 0) {    //如果一個都沒有, 新增一個.
+            final View v_rfoodadd = View.inflate(context, R.layout.view_rfoodadd, null);
+            v_rfoodadd.setTag("");
+            Button bt_remove = v_rfoodadd.findViewById(R.id.bt_remove);
+            bt_remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ll_rfoods.removeView(v_rfoodadd);
                 }
-            }
-        });
+            });
+            ll_rfoods.addView(v_rfoodadd);
+        }
 
-        //日期輸入
-        final Button bt_fstoragetime= alertView.findViewById(R.id.bt_fstoragetime);
-        bt_fstoragetime.setOnClickListener(new View.OnClickListener() {
+        Button bt_foodadd= alertView.findViewById(R.id.bt_foodadd);
+        bt_foodadd.setOnClickListener(new View.OnClickListener() {     //選擇分類
             @Override
-            public void onClick(View view) {
-                Calendar calendar= Calendar.getInstance(); //取得一個日曆實體.
-
-                DatePickerDialog datePickerDialog= new DatePickerDialog(
-                        context, new DatePickerDialog.OnDateSetListener() {
+            public void onClick(View v) {
+                //食材增加
+                final View v_rfoodadd = View.inflate(context, R.layout.view_rfoodadd, null);
+                v_rfoodadd.setTag("");
+                Button bt_remove = v_rfoodadd.findViewById(R.id.bt_remove);
+                bt_remove.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year, int month, int day) {  //month要+1.
-                        String sdate= DateFunction.stringFormat(year, month+1, day);
-                        bt_fstoragetime.setText(sdate);
-                        Toast.makeText(context, sdate, Toast.LENGTH_SHORT).show();
+                    public void onClick(View v) {
+                        ll_rfoods.removeView(v_rfoodadd);
                     }
-                },
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)
-                );
-                datePickerDialog.show();
-
+                });
+                ll_rfoods.addView(v_rfoodadd);
             }
         });
+
+        //步驟輸入
+        final LinearLayout ll_rcookstep= alertView.findViewById(R.id.ll_rcookstep);
+        ll_rcookstep.setTag("");
+
+        if (ll_rcookstep.getChildCount() == 0) {    //如果一個都沒有, 新增一個.
+            final View v_rstepadd = View.inflate(context, R.layout.view_rstepadd, null);
+            v_rstepadd.setTag("");
+            Button bt_remove = v_rstepadd.findViewById(R.id.bt_remove);
+            bt_remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ll_rcookstep.removeView(v_rstepadd);
+                }
+            });
+            ll_rcookstep.addView(v_rstepadd);
+        }
+
+        Button bt_stepadd= alertView.findViewById(R.id.bt_stepadd);
+        bt_stepadd.setOnClickListener(new View.OnClickListener() {     //選擇分類
+            @Override
+            public void onClick(View v) {
+                //步驟增加
+                final View v_rstepadd = View.inflate(context, R.layout.view_rstepadd, null);
+                v_rstepadd.setTag("");
+
+                //TextView tv_step= v_rstepadd.findViewById(R.id.tv_step);
+                //tv_step.setText("作法 " +(ll_rcookstep.getChildCount()+1) +" ：");
+                // TODO: 2019/1/12 待優化, 步驟含編號; 若移除,如何修改後續步驟編號.
+
+                Button bt_remove = v_rstepadd.findViewById(R.id.bt_remove);
+                bt_remove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ll_rcookstep.removeView(v_rstepadd);
+                    }
+                });
+                ll_rcookstep.addView(v_rstepadd);
+            }
+        });
+
 
         alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
             @Override
             public void onClick(View v) {
                 //連接layoutXML
-                EditText et_fname= alertView.findViewById(R.id.et_fname);
-                EditText et_fquantity= alertView.findViewById(R.id.et_fquantity);
-                EditText et_funit= alertView.findViewById(R.id.et_funit);
-                //EditText et_fposition= alertView.findViewById(R.id.et_fposition);
+                EditText et_rname= alertView.findViewById(R.id.et_rname);
+                EditText et_rportion= alertView.findViewById(R.id.et_rportion);
+                EditText et_rremark= alertView.findViewById(R.id.et_rremark);
+
+                boolean isNull= false;
+                //取得食材內容
+                for (int i = 0; i < ll_rfoods.getChildCount() && isNull==false; i++) {
+                    View v_rfoodadd = ll_rfoods.getChildAt(i);
+                    EditText et_rfname = v_rfoodadd.findViewById(R.id.et_rfname);
+                    EditText et_rfquantity = v_rfoodadd.findViewById(R.id.et_rfquantity);
+                    EditText et_rfunit = v_rfoodadd.findViewById(R.id.et_rfunit);
+                    if(et_rfname.getText().toString().equals("")&&
+                            et_rfquantity.getText().toString().equals("")&&
+                            et_rfunit.getText().toString().equals("")) {    //若食材為空, 停止迴圈並清空ll_rfoodstag.
+                        isNull= true;
+                        ll_rfoods.setTag("");
+                    }
+                    else {    //若食材皆不為空.
+                        //將食材內容並為字串
+                        v_rfoodadd.setTag(et_rfname.getText().toString()+" " +
+                                et_rfquantity.getText().toString()+" " +
+                                et_rfunit.getText().toString()+" ");     //以空白間隔名稱數量單位.
+                        if(i==0)
+                            ll_rfoods.setTag(ll_rfoods.getTag().toString().concat(
+                                    v_rfoodadd.getTag().toString()));   //取得vtag, 接到lltag中. 第一個食材不加底線.
+                        else
+                            ll_rfoods.setTag(ll_rfoods.getTag().toString().concat(
+                                    "_"+v_rfoodadd.getTag().toString()));   //取得vtag, 接到lltag中. 以底線間隔食材.
+                    }
+                }
+
+                //取得步驟內容
+                for (int i = 0; i < ll_rcookstep.getChildCount() && isNull==false; i++) {
+                    View v_rstepadd = ll_rcookstep.getChildAt(i);
+                    ImageButton ib_rsimg = v_rstepadd.findViewById(R.id.ib_rsimg);
+                    EditText et_rstep = v_rstepadd.findViewById(R.id.et_rstep);
+                    if(et_rstep.getText().toString().equals("")) {      //若作法為空, 停止迴圈並清空ll_rcooksteptag.
+                        isNull= true;
+                        ll_rcookstep.setTag("");
+                    }
+                    else {    //若作法不為空.
+                        // TODO: 2019/1/12 stepimage選取, 並判斷null處理方式.
+                        //將步驟內容並為字串
+                        v_rstepadd.setTag(et_rstep.getText().toString());
+                        if(i==0)
+                            ll_rcookstep.setTag(ll_rcookstep.getTag().toString().concat(
+                                    v_rstepadd.getTag().toString()));   //取得vtag, 接到lltag中. 第一個步驟不加底線.
+                        else
+                            ll_rcookstep.setTag(ll_rcookstep.getTag().toString().concat(
+                                    "__"+v_rstepadd.getTag().toString()));   //取得vtag, 接到lltag中. 以雙底線間隔步驟.
+                    }
+                }
 
                 //取得填寫的內容
-                String[] fcontent=new String[6];
-                fcontent[0]= ib_specie.getTag().toString(); //取得ID
-                fcontent[1]= et_fname.getText().toString();
-                fcontent[2]= et_fquantity.getText().toString();
-                fcontent[3]= et_funit.getText().toString();
-                fcontent[4]= rg_fposition.getTag().toString();
-                fcontent[5]= bt_fstoragetime.getText().toString();
+                String[] rcontent=new String[8];
+                rcontent[0]= ll_rtype.getTag().toString().trim();
+                rcontent[1]= et_rname.getText().toString();
+                rcontent[2]= ib_rimg.getTag().toString();
+                rcontent[3]= et_rportion.getText().toString();
+                rcontent[4]= ll_rfoods.getTag().toString().trim();
+                rcontent[5]= ll_rcookstep.getTag().toString().trim();
+                //rcontent[6]= ib_rsimg.getText().toString();
+                rcontent[6]= "圖";
+                rcontent[7]= et_rremark.getText().toString();
 
                 //檢查是否有欄位為空
-                boolean isNull= false;
-                for(int i=0; i<fcontent.length; i++){
-                    if(fcontent[i].equals(""))
+                //boolean isNull= false;
+                for(int i=0; i<rcontent.length; i++){
+                    if(rcontent[i].equals(""))
                         isNull= true;
                 }   //若使用for each, 暫存each的對象為空時, 會造成錯誤.
 
                 if(isNull) {  //若有欄位未填寫.
                     Toast.makeText(context, "有欄位空著!!", Toast.LENGTH_SHORT).show();
                 }else {
-                    String INSERT_FOOD_TABLE = "INSERT INTO food (food_specie, food_name, food_quantity, " +
-                            "food_unit, food_position, food_storagetime) " +
-                            "VALUES('"+ fcontent[0] +"', '"+ fcontent[1] +"', '"+ fcontent[2] +"', " +
-                            "'"+ fcontent[3] +"', '"+ fcontent[4] +"', '"+ fcontent[5] +"')";
-                    mSQLiteDatabase.execSQL(INSERT_FOOD_TABLE);
+                    String INSERT_RECIPE_TABLE = "INSERT INTO recipe (" +
+                            "recipe_phc, recipe_types, recipe_name, " +
+                            "recipe_image, recipe_portion, recipe_foods," +
+                            "recipe_cookstep, recipe_stepimage, recipe_remark) " +
+                            "VALUES('私房', '" + rcontent[0] + "', " + "'" + rcontent[1] + "', " +
+                            "'" + rcontent[2] + "', '" + rcontent[3] + "', '" + rcontent[4] + "', " +
+                            "'" + rcontent[5] + "', '" + rcontent[6] + "', '" + rcontent[7] + "')";
+                    mSQLiteDatabase.execSQL(INSERT_RECIPE_TABLE);
                     Toast.makeText(context, "新增成功!!", Toast.LENGTH_SHORT).show();
 
-                    //rcontent= INSERT_FOOD_TABLE;     //相當於return String.
                     dismiss();
                 }
             }
@@ -278,7 +479,7 @@ public class RecipeDialog extends Dialog {
         });
 
         setContentView(alertView);
-        setAlertWindow(0.9, 0.9, false);
+        setAlertWindow(1, 1, false);
     }
 
     //Recipe Revise
@@ -403,19 +604,19 @@ public class RecipeDialog extends Dialog {
                 //EditText et_fposition= alertView.findViewById(R.id.et_fposition);
 
                 //取得填寫的內容
-                String[] fcontent=new String[7];
-                fcontent[0]= fi.getfId();   //拿出物件中的某資訊.
-                fcontent[1]= ib_specie.getTag().toString(); //取得ID
-                fcontent[2]= et_fname.getText().toString();
-                fcontent[3]= et_fquantity.getText().toString();
-                fcontent[4]= et_funit.getText().toString();
-                fcontent[5]= rg_fposition.getTag().toString();
-                fcontent[6]= bt_fstoragetime.getText().toString();
+                String[] rcontent=new String[7];
+                rcontent[0]= fi.getfId();   //拿出物件中的某資訊.
+                rcontent[1]= ib_specie.getTag().toString(); //取得ID
+                rcontent[2]= et_fname.getText().toString();
+                rcontent[3]= et_fquantity.getText().toString();
+                rcontent[4]= et_funit.getText().toString();
+                rcontent[5]= rg_fposition.getTag().toString();
+                rcontent[6]= bt_fstoragetime.getText().toString();
 
                 //檢查是否有欄位為空
                 boolean isNull= false;
-                for(int i=1; i<fcontent.length; i++){
-                    if(fcontent[i].equals(""))
+                for(int i=1; i<rcontent.length; i++){
+                    if(rcontent[i].equals(""))
                         isNull= true;
                 }
 
@@ -423,10 +624,10 @@ public class RecipeDialog extends Dialog {
                     Toast.makeText(context, "有欄位空著!!", Toast.LENGTH_SHORT).show();
                 }else {
                     String UPDATE_FOOD_TABLE= "UPDATE food SET " +
-                            "food_specie="+ fcontent[1] +", food_name='"+ fcontent[2] +"', " +
-                            "food_quantity="+ fcontent[3] +", food_unit='"+ fcontent[4] +"', " +
-                            "food_position='"+ fcontent[5] +"', food_storagetime='"+ fcontent[6] +"' " +
-                            "where food_id=" + fcontent[0];
+                            "food_specie="+ rcontent[1] +", food_name='"+ rcontent[2] +"', " +
+                            "food_quantity="+ rcontent[3] +", food_unit='"+ rcontent[4] +"', " +
+                            "food_position='"+ rcontent[5] +"', food_storagetime='"+ rcontent[6] +"' " +
+                            "where food_id=" + rcontent[0];
                     mSQLiteDatabase.execSQL(UPDATE_FOOD_TABLE);
                     Toast.makeText(context, "修改成功!!", Toast.LENGTH_SHORT).show();
 
@@ -476,18 +677,19 @@ public class RecipeDialog extends Dialog {
     }
 
     //Recipe Delete
-    public void buildDelete(final FoodItem fi) {
+    public void buildDelete(final RecipeItem ri) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertView = inflater.inflate(R.layout.alertdialog_delete, null);    //layout可換!
 
         TextView tv_content= alertView.findViewById(R.id.tv_content);
-        tv_content.setText("真的要刪除這"+fi.getfQuantity() + fi.getfUnit() + fi.getfName() +"？");
+        tv_content.setText("真的要刪除食譜 "+ri.getrName()+" ？");
 
         alertView.findViewById(R.id.bt_ok).setOnClickListener(new View.OnClickListener() {    //bt可換!
             @Override
             public void onClick(View v) {
-                String DELETE_FOOD_TABLE= "DELETE FROM food WHERE food_id=" +fi.getfId();
-                mSQLiteDatabase.execSQL(DELETE_FOOD_TABLE);
+                // TODO: 2018/12/27  待修正, 刪除只本食譜使用的TAG?? 或是typesetting提供一鍵刪除沒有用到的tag??
+                String DELETE_RECIPE_TABLE= "DELETE FROM recipe WHERE recipe_id=" +ri.getrId();
+                mSQLiteDatabase.execSQL(DELETE_RECIPE_TABLE);
                 Toast.makeText(context, "刪除成功!!", Toast.LENGTH_SHORT).show();
 
                 //rcontent= DELETE_FOOD_TABLE;
@@ -508,92 +710,61 @@ public class RecipeDialog extends Dialog {
 
     // TODO: 2018/9/6 待優化, 更多搜尋範圍; between兩日期.多種類.多名稱...?
     //Recipe Search
-    public void buildSearch(final ArrayList<HashMap<String, Object>> l_specie) {
+    public void buildSearch() {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View alertView = inflater.inflate(R.layout.alertdialog_fsearch, null);    //layout可換!
+        final View alertView = inflater.inflate(R.layout.alertdialog_rsearch, null);    //layout可換!
 
-        //種類按鈕
-        final ImageButton ib_specie= alertView.findViewById(R.id.ib_specie);
-        ib_specie.setTag("");   //"初始化"tag, 避免無輸入時錯誤.
-        ib_specie.setOnClickListener(new View.OnClickListener() {
+        final LinearLayout ll_rfood= alertView.findViewById(R.id.ll_rfood);
+        ll_rfood.setTag("");
+
+        //食材增加按鈕
+        final Button bt_rfoodadd= alertView.findViewById(R.id.bt_rfoodadd);
+        bt_rfoodadd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final RecipeDialog fSpecie= new RecipeDialog(context);
-                fSpecie.buildSselect(l_specie);
-                fSpecie.show();
-                fSpecie.setOnDismissListener(new OnDismissListener() {
+                EditText et_rfood= alertView.findViewById(R.id.et_rfood);
+                if(!et_rfood.getText().toString().equals("")) {
+
+                    final Button bt_rfood= new Button(context);
+                    bt_rfood.setText(et_rfood.getText().toString());
+                    bt_rfood.setTextSize(10);
+                    bt_rfood.setBackground(ContextCompat.getDrawable(context, R.drawable.titem_bg));
+                    bt_rfood.setLayoutParams(new LinearLayout.LayoutParams(
+                            200, LinearLayout.LayoutParams.WRAP_CONTENT, 0));    //設定比重weight.
+                    bt_rfood.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //LinearLayout ll_rfood= alertView.findViewById(R.id.ll_rfood);
+                            ll_rfood.removeView(bt_rfood);
+                            ll_rfood.setTag(ll_rfood.getTag().toString().replace(
+                                    " "+bt_rfood.getText().toString(),""));    //將bt文字消除(替換為空字串).
+                        }
+                    });
+
+                    ll_rfood.addView(bt_rfood);
+                    ll_rfood.setTag(ll_rfood.getTag().toString().concat(" "+bt_rfood.getText().toString()));    //取得bt文字, 接到tag中.
+                    et_rfood.setText("");
+                }
+            }
+        });
+
+        //分類按鈕
+        final Button bt_rtypeall= alertView.findViewById(R.id.bt_rtypeall);
+        bt_rtypeall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final RecipeDialog rd= new RecipeDialog(context);
+                rd.buildTAll();
+                rd.show();
+                rd.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if(!fSpecie.getReturn().equals("")) {
-                            TextView tv_showsname= alertView.findViewById(R.id.tv_showsname);
-                            TextView tv_showslife= alertView.findViewById(R.id.tv_showslife);
-
-                            //取得點選的種類ID, 取出詳細資料顯示在button.
-                            SpecieItem si= new SpecieItem(l_specie.get(
-                                    Integer.valueOf(fSpecie.getReturn())
-                            ));
-
-                            tv_showsname.setText(si.getsName());
-                            tv_showslife.setText(si.getsLife());
-                            ib_specie.setTag(si.getsId());  //用Tag紀錄ID.
-                            ib_specie.setImageResource(Integer.valueOf(si.getImgId()));
+                        if(!rd.getReturn().equals("")) {
+                            EditText et_rtype= alertView.findViewById(R.id.et_rtype);
+                            et_rtype.setText(rd.getReturn());
                         }
                     }
                 });
-            }
-        });
-
-        //位置按鈕
-        final CheckBox cb_freezing= alertView.findViewById(R.id.cb_freezing);
-        final CheckBox cb_refrigerated= alertView.findViewById(R.id.cb_refrigerated);
-        final CheckBox cb_fresh= alertView.findViewById(R.id.cb_fresh);
-        cb_freezing.setTag("");
-        cb_refrigerated.setTag("");
-        cb_fresh.setTag("");
-        cb_freezing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {    //buttonView為當前觸發的cb, isChecked為cb的選取狀態.
-                if(isChecked) cb_freezing.setTag("冷凍室");
-                else cb_freezing.setTag("");
-            }
-        });
-        cb_refrigerated.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {    //buttonView為當前觸發的cb, isChecked為cb的選取狀態.
-                if(isChecked) cb_refrigerated.setTag("冷藏室");
-                else cb_refrigerated.setTag("");
-            }
-        });
-        cb_fresh.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {    //buttonView為當前觸發的cb, isChecked為cb的選取狀態.
-                if(isChecked) cb_fresh.setTag("保鮮室");
-                else cb_fresh.setTag("");
-            }
-        });
-
-        //日期按鈕
-        final Button bt_fstoragetime1= alertView.findViewById(R.id.bt_fstoragetime1);
-        bt_fstoragetime1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar calendar= Calendar.getInstance(); //取得一個日曆實體.
-
-                DatePickerDialog datePickerDialog= new DatePickerDialog(
-                        context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int day) {  //month要+1.
-                        String sdate= DateFunction.stringFormat(year, month+1, day);
-                        bt_fstoragetime1.setText(sdate);
-                        Toast.makeText(context, sdate, Toast.LENGTH_SHORT).show();
-                    }
-                },
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)
-                );
-                datePickerDialog.show();
-
             }
         });
 
@@ -601,56 +772,62 @@ public class RecipeDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 //連接layoutXML
-                EditText et_fname= alertView.findViewById(R.id.et_fname);
-                //EditText et_fposition= alertView.findViewById(R.id.et_fposition);
-                String fposition= "";
-                //若cb被選重則加入字串(以空白間隔).
-                if(!cb_freezing.getTag().toString().equals("")) fposition+=cb_freezing.getTag().toString()+" ";
-                if(!cb_refrigerated.getTag().toString().equals("")) fposition+=cb_refrigerated.getTag().toString()+" ";
-                if(!cb_fresh.getTag().toString().equals(""))    fposition+=cb_fresh.getTag().toString()+" ";
-                fposition= fposition.trim();     //將字串末的空白去除.
-                fposition= fposition.replaceAll(" ", "', '");     //則將所有空白替換成參數的字串.
-                //fposition.replaceAll(" ", "' OR food_position= '");
+                EditText et_rname= alertView.findViewById(R.id.et_rname);
+                EditText et_rtype= alertView.findViewById(R.id.et_rtype);
 
-                String[] fcontent=new String[4];
-                fcontent[0]= ib_specie.getTag().toString();
-                fcontent[1]= et_fname.getText().toString();
-                fcontent[2]= fposition;
-                fcontent[3]= bt_fstoragetime1.getText().toString();
+                String rtype="";
+                if(!et_rtype.getText().toString().equals("")) {
+                    Cursor c;
+                    c= mSQLiteDatabase.rawQuery("SELECT * FROM type WHERE type_tag= '"+et_rtype.getText().toString()+"' ", null);
+                    c.moveToFirst();
+                    if(c.getCount()!=0)     rtype= " "+c.getString(0)+" ";
+                    else    Toast.makeText(context, "「"+et_rtype.getText().toString()+"」不存在!",Toast.LENGTH_SHORT).show();
+                    c.close();
+                }
+
+                String[] rcontent=new String[3];
+                rcontent[0]= et_rname.getText().toString();
+                rcontent[1]= ll_rfood.getTag().toString().trim();
+                rcontent[2]= rtype;
 
                 //取得填寫的內容
                 String[] column=new String[4];
-                column[0]= "food_specie= '"+ fcontent[0] +"'";  //種類!!
-                column[1]= "food_name LIKE '%"+ fcontent[1] +"%'";
-                column[2]= "food_position IN ('"+ fcontent[2] +"')";
-                column[3]= "food_storagetime= '"+ fcontent[3] +"'";
+                column[0]= "recipe_name LIKE '%"+ rcontent[0] +"%'";
+                // TODO: 2018/12/27 BUG!! 若查詢都沒有的食材, 就會跑出ALL的結果(因為所有食譜都有"_"). 每個項目select群組再合併結果?
+                column[1]= "recipe_foods LIKE '%_%' OR ";    // TODO: 2018/12/27 疑問, WHERE A OR B ...時, 是"必須有A" 或者有B...
+                String tmp= "";
+                while(rcontent[1].contains(" ")) {    //字串是否包含" ".
+                    tmp= tmp.concat(rcontent[1].substring(0, rcontent[1].indexOf(" "))).trim();     //取得開始到第一個" "前的子字串, 去除首尾空白.
+                    column[1]= column[1].concat("recipe_foods LIKE '%"+ tmp +"%' OR ");
+                    rcontent[1]= rcontent[1].substring(rcontent[1].indexOf(" ")+1);   //tmp= 第一個" "後, 到結尾的字串.
+                    //Log.d("i++", "i= "+i+"   tmp= "+tmp)
+                }
+                //剩最後一項(tmp沒有" ")
+                tmp= tmp.concat(rcontent[1]).trim();
+                column[1]= column[1].concat("recipe_foods LIKE '%"+ tmp +"%'");
+
+                column[2]= "recipe_types LIKE '%"+ rcontent[2] +"%'";
 
                 boolean first= true;
                 String WHERE= "";
-                for(int i=0; i<fcontent.length; i++) {
-                    if (fcontent[i].equals("")) continue;
+                for(int i=0; i<rcontent.length; i++) {
+                    if (rcontent[i].equals("")) continue;
                     else {
                         if (first)  first= false;
-                        else    WHERE += " and ";
+                        else if(i==1)   WHERE += " OR ";
+                        else    WHERE += " AND ";
 
                         WHERE += column[i];
                     }
                 }
 
-                rcontent= WHERE;     //相當於return String.
+                RecipeDialog.this.rcontent = WHERE;     //相當於return String.
                 dismiss();
             }
         });
 
-        alertView.findViewById(R.id.bt_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancel();
-            }
-        });
-
         setContentView(alertView);
-        setAlertWindow(0.9, 0.9, false);
+        this.setAlertWindow(0.5, 0.8, true, "left", 0f);
     }
 
 
