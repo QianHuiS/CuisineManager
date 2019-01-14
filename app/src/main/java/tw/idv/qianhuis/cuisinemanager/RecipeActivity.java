@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 
@@ -259,30 +261,35 @@ public class RecipeActivity extends AppCompatActivity {
             iv_nodata.setVisibility(View.GONE); //有資料則不顯示圖片.
 
             while (!c1.isAfterLast()) {
+                boolean isAdd= true;
                 RecipeItem ri = new RecipeItem(c1.getString(0),
                         c1.getString(1), c1.getString(2),
                         c1.getString(3), c1.getString(4),
                         c1.getString(5), c1.getString(6),
                         c1.getString(7), c1.getString(8),
-                        c1.getString(9), null
+                        c1.getString(9), "0", null
                 );
-                /*
-                //取出種類內容(同等外來鍵效果)
-                ArrayList<TypeItem> l_ti= new ArrayList<>();
-                Cursor c2;  //透過recipe的typeID欄位, 查詢type資料並取出.
-                for(int i = 1; !(ri.getTpyetag(i).equals("")); i++){
-                    String SELECT= "SELECT * FROM type WHERE type_id= " + ri.getTpyetag(i);
-                    c2= mSQLiteDatabase.rawQuery(SELECT, null);
-                    c2.moveToFirst();
 
-                    TypeItem ti;
-                    ti = new TypeItem(c2.getString(0), c2.getString(1),
-                            c2.getString(2));
-                    l_ti.add(ti);
-                    c2.close();
+                //推薦recipe資料排序
+                if(bt_suggest.isSelected()) {
+                    ArrayList<HashMap<String, Object>> expiredFoods= getExpiredFoods();  //取得foodTable>3天內過期&&做即期排序.
+
+                    for(int i = 1; !(ri.showFoods(i).equals("")); i++){   //食譜中有用到越多的, 優先度++321. 顯示即期的食材?
+                        String riFood= ri.getFoods(ri.showFoods(i), 1);     //ri所用食材_第i個.
+                        for(HashMap<String, Object> ef :expiredFoods) {     //每一個即期fi.
+                            FoodItem fi= new FoodItem(ef);
+                            if(fi.getfName().contains(riFood)) {  //若即期fi名稱包含ri食材.
+                                if(Integer.valueOf(fi.getfLife())<=0)   //即期fi天數<=0 ri優先度+3.
+                                    ri.setrExpired(ri.getrExpired()-3);
+                                else if(Integer.valueOf(fi.getfLife())==1)  //即期fi天數==1 ri優先度+2.
+                                    ri.setrExpired(ri.getrExpired()-2);
+                                else if(Integer.valueOf(fi.getfLife())==2)  //即期fi天數==2 ri優先度+1.
+                                    ri.setrExpired(ri.getrExpired()-1);
+                            }
+                        }
+                    }
+
                 }
-                ri.settItems(l_ti);
-                */
 
                 //分類查詢處理
                 if (bt_typemain.isSelected()) {
@@ -314,20 +321,16 @@ public class RecipeActivity extends AppCompatActivity {
         if(l_recipe.size()==0)      dataIsNull();
         else {  //若有資料則顯示list.
 
-            // TODO: 2018/12/13 食譜推薦排序!!!
-            //推薦recipe資料排序
-            //取得foodTable>做即期排序>recipe.search(排名前10的食材, 食譜中有用到越多的 useE++ 排序靠前); 顯示即期排名前10的食材?
-            /*
-            if(bt_suggest.isSelected()) {     //bt_即期.setOnClick{ isflag= !isflag; } → if(isflag) 排序;
+            //即期排序
+            if(bt_suggest.isSelected()) {
                 Collections.sort(l_recipe, new Comparator<HashMap<String, Object>>() {
                     public int compare(HashMap<String, Object> o1, HashMap<String, Object> o2) {
-                        Integer fLife1 = Integer.valueOf(o1.get("food_life").toString());  //從l_recipe裡面拿出來的第一個.
-                        Integer fLife2 = Integer.valueOf(o2.get("food_life").toString());  //從l_recipe裡面拿出來的第二個.
-                        return fLife1.compareTo(fLife2);
+                        Integer rExpired1 = Integer.valueOf(o1.get("recipe_expired").toString());  //從l_recipe裡面拿出來的第一個.
+                        Integer rExpired2 = Integer.valueOf(o2.get("recipe_expired").toString());  //從l_recipe裡面拿出來的第二個.
+                        return rExpired1.compareTo(rExpired2);
                     }
                 });
             }
-            */
 
             SimpleAdapter adapter= new SimpleAdapter(RecipeActivity.this,
                     l_recipe, R.layout.listview_recipe,
@@ -677,6 +680,61 @@ public class RecipeActivity extends AppCompatActivity {
 
         iv_nodata.setVisibility(View.VISIBLE);
         Toast.makeText(RecipeActivity.this, "沒有資料!!", Toast.LENGTH_SHORT).show();
+    }
+
+    private ArrayList<HashMap<String, Object>> getExpiredFoods() {      //取得foodTable>3天內過期&&做即期排序.
+        ArrayList<HashMap<String, Object>> l_food= new ArrayList<>();
+        //取得foodTable資料
+        l_food.clear();
+        Cursor c1;
+        c1= mSQLiteDatabase.rawQuery("SELECT * FROM food WHERE "+ ALL, null);
+        c1.moveToFirst();
+
+        //檢查是否有資料
+        if(c1.getCount()==0) {   //若無資料, 顯示找不到資料及圖片.
+            c1.close();
+            Toast.makeText(RecipeActivity.this, "冰箱沒有食物!!", Toast.LENGTH_SHORT).show();
+        } else {    //若有資料, 將每筆資料取出.
+            while (!c1.isAfterLast()) {
+                //取出種類內容(同等外來鍵效果)
+                Cursor c2;  //透過food的specieID欄位, 查詢specie資料並取出.
+                String SELECT = "SELECT * FROM specie WHERE specie_id= " + (c1.getString(1));
+                c2 = mSQLiteDatabase.rawQuery(SELECT, null);
+                c2.moveToFirst();
+
+                SpecieItem si;
+                si = new SpecieItem(c2.getString(0), c2.getString(1),
+                        c2.getString(2), c2.getString(3));
+                si.setImgId(String.valueOf(
+                        getResources().getIdentifier(
+                                si.getsImage(), "drawable", getPackageName())
+                ));
+                c2.close();
+
+                FoodItem fi = new FoodItem(c1.getString(0),
+                        c1.getString(1), c1.getString(2),
+                        c1.getString(3), c1.getString(4),
+                        c1.getString(5), c1.getString(6), si
+                );
+
+                //即期日在3天以上的排除
+                if(Integer.valueOf(fi.getfLife())<3)
+                    l_food.add(fi.getfHashMap());
+                c1.moveToNext();
+            }
+            c1.close();
+
+            //即期排序
+            Collections.sort(l_food, new Comparator<HashMap<String, Object>>() {
+                public int compare(HashMap<String, Object> o1, HashMap<String, Object> o2) {
+                    Integer fLife1 = Integer.valueOf(o1.get("food_life").toString());  //從l_food裡面拿出來的第一個.
+                    Integer fLife2 = Integer.valueOf(o2.get("food_life").toString());  //從l_food裡面拿出來的第二個.
+                    return fLife1.compareTo(fLife2);
+                }
+            });
+
+        }
+        return l_food;
     }
 
     //調用相簿圖檔相關

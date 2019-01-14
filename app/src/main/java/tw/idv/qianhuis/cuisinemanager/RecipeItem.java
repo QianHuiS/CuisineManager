@@ -3,7 +3,6 @@ package tw.idv.qianhuis.cuisinemanager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ public class RecipeItem {
     private String rStepimages;
     private String rRemark;
 
+    private String rExpired;
+
     private ArrayList<TypeItem> tItems;
 
     //public FoodItem(){};
@@ -28,7 +29,7 @@ public class RecipeItem {
     //建立HashMap
     public RecipeItem(String rid, String rphc, String rtype, String rname,
                       String rimage, String rportion, String rfood, String rcookstep,
-                      String rstepimage, String rremark, ArrayList<TypeItem> titem){
+                      String rstepimage, String rremark, String rexpired, ArrayList<TypeItem> titem){
         rId = rid;
         rPhc = rphc; //種類!!
         rTypes = rtype;
@@ -39,6 +40,8 @@ public class RecipeItem {
         rCooksteps = rcookstep;
         rStepimages = rstepimage;
         rRemark = rremark;
+
+        rExpired = rexpired;
 
         tItems = titem;
 
@@ -56,6 +59,8 @@ public class RecipeItem {
         rCooksteps = (String)selectItem.get("recipe_cooksteps");
         rStepimages = (String)selectItem.get("recipe_stepimages");
         rRemark = (String)selectItem.get("recipe_remark");
+
+        rExpired = (String)selectItem.get("recipe_expired");
     }
 
     //Getter&Setter
@@ -149,6 +154,14 @@ public class RecipeItem {
         this.tItems = tItems;
     }
 
+    public int getrExpired() {
+        return Integer.valueOf(rExpired);
+    }
+
+    public void setrExpired(int rExpired) {
+        this.rExpired = String.valueOf(rExpired);
+    }
+
     //其他
     public HashMap<String, Object> getrHashMap() {      //僅允許內部設置.
         HashMap<String, Object> rHashMap= new HashMap<>();
@@ -162,41 +175,10 @@ public class RecipeItem {
         rHashMap.put("recipe_cooksteps", rCooksteps);
         rHashMap.put("recipe_stepimages", rStepimages);
         rHashMap.put("recipe_remark", rRemark);
-        rHashMap.put("recipe_titems", tItems);
+
+        rHashMap.put("recipe_expired", rExpired);
 
         return rHashMap;
-    }
-
-    //分割rfood
-    private String[][] getFoods() {
-        //rFood範例= "豆包 4 個 _老薑 3 片 _香菜 0 適量 "
-        int separate= 0;    //查詢字串index, 有幾次分割(分割完幾個字串).
-        int num= 0;
-        while(rFoods.indexOf("_", num)>0) {   //若字串中包含"_"(否為-1則不成立).
-            num= rFoods.indexOf("_", num);
-            //tmp1= tmp1.substring(tmp1.indexOf("_")+1);   //tmp=第一個出現"_"後, 到結尾的子字串.
-            separate++;
-        }
-
-        String[][] foods= new String[separate+1][3];   //[分割次數+1個食材][名稱數量單位].
-        String tmp1= rFoods;
-        String tmp2= "";
-        for(int i=0; i<foods.length; i++) {     //先分割各食材, 再分割名稱數量單位.
-            if(tmp1.contains("_")) {    //若字串中包含"_"(不是最後一個).
-                tmp2= tmp1.substring(0, tmp1.indexOf("_")-1);    //取得開始到第一個"_"前的子字串.
-                tmp1= tmp1.substring(tmp1.indexOf("_")+1);   //tmp1= 第一個"_"後, 到結尾的字串.
-            } else {
-                tmp2= tmp1;
-            }
-
-            for(int j=0; j<foods[i].length; j--){
-                foods[i][j]= tmp2.substring(0, tmp2.indexOf(" ")-1);    //取得開始到第一個" "前的字串.
-                if(j==foods[i].length-1) {}     //若是最後一個, 啥都不做.
-                else    tmp2= tmp2.substring(tmp2.indexOf(" ")+1); //tmp2= 第一個" "後, 到結尾的字串.
-            }
-        }
-
-        return foods;
     }
 
     // TODO: 2018/12/12 待優化, 食材顯示改為可點擊的自定義view.
