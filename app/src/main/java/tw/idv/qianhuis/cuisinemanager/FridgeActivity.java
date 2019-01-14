@@ -182,7 +182,7 @@ public class FridgeActivity extends AppCompatActivity {
         l_specie= new ArrayList<>();
         l_simage= new ArrayList<>();
 
-        //bt_側欄 bt_expired
+        //bt_側欄 bt_suggest
 
         bt_delete= findViewById(R.id.bt_delete);
         bt_revise= findViewById(R.id.bt_revise);
@@ -796,7 +796,7 @@ public class FridgeActivity extends AppCompatActivity {
         if(!fridgeLoad) {
             //連結XML
             bt_next= findViewById(R.id.bt_next);
-            bt_expired= findViewById(R.id.bt_expired);
+            bt_suggest= findViewById(R.id.bt_suggest);
             ll_next1= findViewById(R.id.ll_next1);
             ll_next2= findViewById(R.id.ll_next2);
 
@@ -813,7 +813,7 @@ public class FridgeActivity extends AppCompatActivity {
             l_specie= new ArrayList<>();
             l_simage= new ArrayList<>();
 
-            //bt_側欄 bt_expired
+            //bt_側欄 bt_suggest
 
             bt_delete= findViewById(R.id.bt_delete);
             bt_revise= findViewById(R.id.bt_revise);
@@ -862,7 +862,7 @@ public class FridgeActivity extends AppCompatActivity {
             l_recipe= new ArrayList<>();
             l_type= new ArrayList<>();
 
-            //bt_側欄 bt_expired
+            //bt_側欄 bt_suggest
 
             bt_delete= findViewById(R.id.bt_delete);
             bt_revise= findViewById(R.id.bt_revise);
@@ -1073,43 +1073,45 @@ public class FridgeActivity extends AppCompatActivity {
 
         if(num==0) {
             c=mSQLiteDatabase.rawQuery("SELECT * FROM type WHERE 1 ", null);
+
+            //合併取得各類的tag(欄位2)
             c.moveToPosition(2);
-            String types1= " " +c.getString(0);
+            String types1= " " +c.getString(2);
             c.moveToPosition(7);
-            types1= types1.concat( " " +c.getString(0)); //以空格分開各tag.
+            types1= types1.concat( " " +c.getString(2)); //以空格分開各tag.
             c.moveToPosition(12);
-            types1= types1.concat( " " +c.getString(0)); //以空格分開各tag.
+            types1= types1.concat( " " +c.getString(2)); //以空格分開各tag.
             c.moveToPosition(18);
-            types1= types1.concat( " " +c.getString(0) +" "); //以空格分開各tag.
+            types1= types1.concat( " " +c.getString(2) +" "); //以空格分開各tag.
             Log.d("types1", "types1= "+types1);
 
             c.moveToPosition(0);
-            String types2= " " +c.getString(0);
+            String types2= " " +c.getString(2);
             c.moveToPosition(1);
-            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
+            types2= types2.concat( " " +c.getString(2)); //以空格分開各tag.
             c.moveToPosition(7);
-            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
+            types2= types2.concat( " " +c.getString(2)); //以空格分開各tag.
             c.moveToPosition(13);
-            types2= types2.concat( " " +c.getString(0)); //以空格分開各tag.
+            types2= types2.concat( " " +c.getString(2)); //以空格分開各tag.
             c.moveToPosition(18);
-            types2= types2.concat( " " +c.getString(0) +" "); //以空格分開各tag.
+            types2= types2.concat( " " +c.getString(2) +" "); //以空格分開各tag.
             //Log.d("types2", "types2= "+types2);
             c.close();
 
             String[][] recipearr= {
-                    {"",types1,"香煎素豆包","圖",
+                    {"",types1,"香煎素豆包","",
                             "6","豆包 4 個 _老薑 3 片 _香菜 0 適量 _醬油膏 0 適量 _香油 0 適量",
                             "豆包沖洗乾淨，小心的將水擠乾。__" +
                                     "鍋子小火燒熱，加入1大匙油，將薑片煸香後取出，豆包兩面煎恰恰。__" +
                                     "佐醬油膏+香油和香菜，趁熱切小塊食用。",
-                            "圖","無備註。"},
-                    {"私房",types2,"金針菇炒絲瓜","圖",
+                            "","無備註。"},
+                    {"私房",types2,"金針菇炒絲瓜","",
                             "3","絲瓜 1 條 _金針菇 1 包 _老薑 3 片",
                             "絲瓜洗淨削皮切片，金針菇洗淨切3段。__" +
                                     "中火熱鍋，加1大匙油，薑片爆香後放入絲瓜和金針菇。__" +
                                     "放鹽適量，蓋上鍋蓋悶煮。__" +
                                     "絲瓜煮透後，加香油即可起鍋。",
-                            "圖","先放鹽可以加速絲瓜出水；若額外加水會變成絲瓜湯..."}
+                            "","先放鹽可以加速絲瓜出水；若額外加水會變成絲瓜湯..."}
             };
 
             String[] sql= new String[recipearr.length];

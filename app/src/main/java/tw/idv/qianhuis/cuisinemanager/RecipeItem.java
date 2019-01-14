@@ -1,7 +1,11 @@
 package tw.idv.qianhuis.cuisinemanager;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -198,26 +202,67 @@ public class RecipeItem {
     // TODO: 2018/12/12 待優化, 食材顯示改為可點擊的自定義view.
     public String showFoods() {
         String showf= "";
-        showf= rFoods;
-        showf= showf.replace(" _", "\n").trim().replace("0", "");
-
         /*
-        //有編號
+        //無編號
+        showf= rFoods;
+        showf= showf.replace(" _", "\n").trim()
+                .replace("0", "");   //若為0則以空取代顯示.
+        */
+        for(int i = 1; !(showFoods(i).equals("")); i++){   //顯示原資料
+            String s_food= showFoods(i);
+            //食材增加
+            if(i!=1)    showf= showf.concat("\n");
+            showf= showf.concat(i+". "+getFoods(s_food, 1)+" ");
+            if(getFoods(s_food, 2).equals("0"))
+                showf= showf+" ";
+            else
+                showf= showf.concat(getFoods(s_food, 2))+" ";
+            showf= showf.concat(getFoods(s_food, 3));
+        }
+
+        return showf;
+    }
+
+    public String showFoods(int food) {
+        String showf= "";
+
         String tmp= rFoods;
         int i= 1;
         while(tmp.contains("_")) {    //字串是否包含"_".
-            if(tmp.contains("0"))   tmp.replace("0", "");   //若有數量0則省略.
-            showf= showf.concat(i +". " +tmp.substring(0, tmp.indexOf("_")-1));     //取得開始到第一個"_"前的子字串.
-            showf= showf.trim().concat("\n");   //去除首尾空白, 接換行.
+            if(i== food) {
+                showf= showf.concat(tmp.substring(0, tmp.indexOf("_")));     //取得開始到第一個"_"前的子字串.
+                showf= showf.trim();
+            }
             i++;
             tmp= tmp.substring(tmp.indexOf("_")+1);   //tmp1= 第一個"_"後, 到結尾的字串.
         }
         //剩最後一項食材(tmp沒有"_")
-        showf= showf.concat(i +". " +tmp);
-        showf= showf.trim();
-        */
+        if(i==food) {
+            showf = showf.concat(tmp).trim();
+        }
 
         return showf;
+    }
+
+    public String getFoods(String s_food, int part) {
+        String food= "";
+
+        String tmp= s_food;
+        int i= 1;
+        while(tmp.contains(" ")) {    //字串是否包含" ".
+            if(i== part) {
+                food= food.concat(tmp.substring(0, tmp.indexOf(" ")));     //取得開始到第一個"_"前的子字串.
+                food= food.trim();
+            }
+            i++;
+            tmp= tmp.substring(tmp.indexOf(" ")+1);   //tmp1= 第一個" "後, 到結尾的字串.
+        }
+        //剩最後一項食材(tmp沒有" ")
+        if(i==part) {
+            food = food.concat(tmp).trim();
+        }
+
+        return food;
     }
 
     //分割rtype
@@ -226,12 +271,12 @@ public class RecipeItem {
 
         //有編號
         String tmp= rTypes.trim();      //等同.substring(1,rTypes.length()-1);  //去除頭尾" ".
-        //Log.d("rTypes", "rtypes="+rTypes+"\ntmp="+tmp);
+        //Log.d("rTypes", "rtypes="+rTypes+" tmp="+tmp);
         int i= 1;
         while(tmp.contains(" ")) {    //字串是否包含" ".
             if(i==tag) {
                 typtag = typtag.concat(tmp.substring(0, tmp.indexOf(" "))).trim();     //取得開始到第一個" "前的子字串, 去除首尾空白.
-                //Log.d("結果", "i= "+i+"   step= "+step+"   shows= "+shows);
+                //Log.d("結果", "i= "+i+" rtypes="+rTypes+" tmp="+tmp);
             }
             i++;
             tmp= tmp.substring(tmp.indexOf(" ")+1);   //tmp= 第一個" "後, 到結尾的字串.
@@ -240,7 +285,7 @@ public class RecipeItem {
         //剩最後一項(tmp沒有" ")
         if(i==tag) {
             typtag= typtag.concat(tmp).trim();
-            //Log.d("結果", "i= "+i+"   step= "+step+"   shows= "+shows);
+            //Log.d("結果", "i= "+i+" rtypes="+rTypes+" tmp="+tmp);
         }
 
         return typtag;
@@ -250,13 +295,6 @@ public class RecipeItem {
         String showt= "";
         if(tag<tItems.size())   showt= tItems.get(tag).gettTag();
         return showt;
-    }
-
-    //分割rcookstept
-    private String[][] getSteps() {
-        int separate= 0;
-        String[][]steps= new String[separate][];
-        return steps;
     }
 
     public String showSteps(int step) {
@@ -282,4 +320,32 @@ public class RecipeItem {
 
         return shows;
     }
+
+    //bitmap轉string
+    public static String bitmapToString(Bitmap bitmap){
+        //将Bitmap转换成字符串
+        String string=null;
+        ByteArrayOutputStream bStream=new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,bStream);
+        byte[]bytes=bStream.toByteArray();
+        string= Base64.encodeToString(bytes,Base64.DEFAULT);
+        return string;
+    }
+
+    //string轉bitmap
+    public static Bitmap stringToBitmap(String string) {
+        // 将字符串转换成Bitmap类型
+        Bitmap bitmap = null;
+        try {
+            byte[] bitmapArray;
+            bitmapArray = Base64.decode(string, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0,
+                    bitmapArray.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+
 }

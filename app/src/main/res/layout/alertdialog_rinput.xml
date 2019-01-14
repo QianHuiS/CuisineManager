@@ -95,12 +95,22 @@
                 android:text="種類：" />
 
             <TextView
-                android:id="@+id/textView10"
                 style="@style/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center|end"
-                android:text="圖片：" />
+                android:singleLine="false"
+                android:text="(可略)  圖片：" />
+
+            <TextView
+                style="@style/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="※ 長按可設定無圖片."
+                android:textSize="10sp"
+                android:textStyle="italic" />
 
         </LinearLayout>
 
@@ -174,6 +184,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/sitem_bg"
                 android:maxHeight="120dp"
+                android:padding="10dp"
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/specie_unknown" />
 
         </LinearLayout>
@@ -251,7 +263,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
             android:layout_weight="1">
 
@@ -262,7 +274,16 @@
                 android:orientation="vertical"></LinearLayout>
         </ScrollView>
 
+        <TextView
+            style="@style/tv_title"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="※ 數量不明確時, 可採用「 醬油 0 適量 」的方式填寫."
+            android:textSize="10sp"
+            android:textStyle="italic" />
+
     </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/ll_part3"
